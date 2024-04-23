@@ -834,3 +834,53 @@ all_maps %>%
   # or maybe just an observable cell
 ```
 :::
+
+## Geography
+
+### Hydrography
+
+### Dams and Reservoirs
+
+### Land Cover
+
+### Precipitation
+
+### Temperature
+
+### Potential Evapotranspiration
+
+### Runoff
+
+## Water Related Hazards
+
+### Flooding
+
+### NDWI
+
+### NDMI
+
+### SPEI
+
+### Water Pollution
+
+## Water Service Delivery
+
+### Water Infrastructure
+
+### Water Infrastructure with Flood Overlay
+
+### Schools and Hospitals with Flood Overlay
+
+### Access to Improved Water Sources with Built-Up Underlay and Schools and Hospitals Overlay
+
+### Access to Improved Water Sources with Children and Elderly Overlay
+
+## Sanitation and Hygeine
+
+### Access to Improved Sanitation Sources with Built-Up Underlay and Schools and Hospitals Overlay
+
+### Access to Improved Santiation Sources with Children and Elderly Overlay
+
+### Access to Open Defecation Sources with Built-Up Underlay and Schools and Hospitals Overlay
+
+### Access to Open Defecation Sources with Children, Women of Reproductive Age, and Elderly Overlay

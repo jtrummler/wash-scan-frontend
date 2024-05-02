@@ -15,11 +15,16 @@ execute:
 #| include: false
 # Read functions & packages
 # Only the github version of leaflet supports terra, in place of raster, which is now required as sp (on which raster depends) is being deprecated
-# devtools::install_github('rstudio/leaflet')
+#devtools::install_github('rstudio/leaflet')
+#source()
 source("source/fns.R")
+install.packages("terra")
+install.packages("sf")
+install.packages("leaflet")
+source("source/fns.R", chdir = TRUE)
 source("source/helpers.R")
 
-city_dir <- file.path("mnt/", readLines("city-dir.txt"))
+city_dir <- file.path("mnt/", readLines("city-dir.txt")) # done
 user_input_dir <- file.path(city_dir, "01-user-input/")
 process_output_dir <- file.path(city_dir, "02-process-output/")
 spatial_dir <- file.path(process_output_dir, "spatial/")
@@ -62,7 +67,7 @@ useragent <- 'Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; I
 ```
 
 ---
-title: "`r paste(city, country, sep = ', ')`, City Scan"
+title: "`r paste(city, country, sep = ', ')`, Water and Sanitation Scan"
 ---
 
 ```{r}

@@ -17,10 +17,31 @@ execute:
 # Only the github version of leaflet supports terra, in place of raster, which is now required as sp (on which raster depends) is being deprecated
 #devtools::install_github('rstudio/leaflet')
 #source()
-source("source/fns.R")
+source("source/fns.R") #not sure why fns is not recognized
 install.packages("terra")
 install.packages("sf")
 install.packages("leaflet")
+install.packages("yaml")
+install.packaeges("stringr")
+install.packages("dplyr")
+install.packages("plotly")
+install.packages("ggspatial")
+install.packages("tidyterra")
+install.packages("cowplot")
+install.packages("glue")
+library(terra)
+library(sf)
+library(leaflet)
+library(yaml)
+library(stringr)
+library(dplyr)
+library(plotly)
+library(ggspatial)
+library(tidyterra)
+library(cowplot)
+library(glue)
+install.packages("readr")
+library(readr)
 source("source/fns.R", chdir = TRUE)
 source("source/helpers.R")
 
@@ -121,10 +142,6 @@ paste0(str_replace(sections, "(^\\s*- )(.+$)", "\\1[\\2]"), anchors) %>% { cat("
 # {{< meta title >}}
 
 ## Executive Summary
-```{r}
-#| output: asis
-print_slide_text(slide_texts$executive_summary$executive_summary)
-```
 
 ## Setting the Context
 
@@ -138,6 +155,84 @@ print_slide_text(slide_texts$executive_summary$executive_summary)
 #| output: asis
 print_slide_text(slide_texts$setting_the_context$basic_city_info)
 ```
+
+## Geography
+
+### Hydrography
+
+### Dams and Reservoirs
+
+### Land Cover
+
+### Precipitation
+
+### Temperature
+
+### Potential Evapotranspiration
+
+### Runoff
+
+## Water Related Hazards
+
+### Flooding
+
+### NDWI
+
+### NDMI
+
+### SPEI
+
+### Water Pollution
+
+## Water Service Delivery
+
+### Water Infrastructure
+
+### Water Infrastructure with Flood Overlay
+
+### Schools and Hospitals with Flood Overlay
+
+### Access to Improved Water Sources with Built-Up Underlay and Schools and Hospitals Overlay
+
+### Access to Improved Water Sources with Children and Elderly Overlay
+
+## Sanitation and Hygeine
+
+### Access to Improved Sanitation Sources with Built-Up Underlay and Schools and Hospitals Overlay
+
+### Access to Improved Santiation Sources with Children and Elderly Overlay
+
+### Access to Open Defecation Sources with Built-Up Underlay and Schools and Hospitals Overlay
+
+### Access to Open Defecation Sources with Children, Women of Reproductive Age, and Elderly Overlay
+
+
+
+
+
+## Executive Summary
+```{r}
+#| output: asis
+print_slide_text(slide_texts$executive_summary$executive_summary)
+```
+
+## Setting the Context
+```{r}
+#| output: asis
+print_slide_text(slide_texts$setting_the_context$context)
+```
+
+### Basic City Information
+```{r}
+#| output: asis
+print_slide_text(slide_texts$setting_the_context$basic_city_info)
+```
+
+```{r}
+# Add a map layer? But it's just the AOI
+```
+
+ 
 
 ### The State of Urban Infrastructure and Service Delivery
 ```{r}

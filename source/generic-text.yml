@@ -1,3 +1,8 @@
+# EXECUTIVE SUMMARY
+executive_summary:
+  executive_summary:
+    method: TEXT
+
 # SECTION 2
 setting_the_context:
   basic_city_info:

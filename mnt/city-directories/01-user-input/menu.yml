@@ -1,0 +1,46 @@
+# raster processing
+# if the first item is False, all other items in this section will be skipped
+raster_processing: True
+population: True
+wsf: True
+elevation: True
+slope: True
+solar: True
+air: True
+flood: True
+flood_coastal: True
+flood_fluvial: True
+flood_pluvial: True
+landslide: True
+liquefaction: True
+impervious: False
+demographics: True
+
+# GEE
+landcover: True
+summer_lst: True
+nightlight: True
+green: True
+forest: True
+ndmi: True
+
+# accessibility
+accessibility: True
+
+# RWI
+rwi: True
+
+# wildfire
+burned_area: True
+fwi: True
+landcover_burn: True
+
+# road network
+road_network: True
+
+# stats
+# flood_timeline and earthquake_timeline unclear
+all_stats: True
+
+# toolbox
+toolbox: True

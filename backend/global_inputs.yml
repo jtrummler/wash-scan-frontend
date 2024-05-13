@@ -1,0 +1,73 @@
+# data sources
+solar_source: "D:/World Bank/CRP/data/Global Solar Atlas/World_PVOUT_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT.tif"
+solar_graph_source: "/Users/ipshitakarmakar/Dropbox (Personal)/WB/03-multi-scan-materials/Uzbekistan_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthly"
+air_source: "D:/World Bank/CRP/data/Global Annual PM2.5 Grids 1998-2019/sdei-global-annual-gwr-pm2-5-modis-misr-seawifs-aod-v4-gl-03-2019.tif"
+landslide_source: "D:/World Bank/CRP/data/Landslide susceptibility/global-landslide-susceptibility-map-2-27-23.tif"
+liquefaction_source: 'D:/World Bank/CRP/data/Liquefaction susceptibility/liquefaction_v1_deg.tif'
+flood_source: 'D:/World Bank/CRP/data/Fathom 3.0' # provide a free alternative
+flood_source_alt: ''
+impervious_source: '' # leave out imperviousness?
+rwi_source: 'D:/World Bank/CRP/data/Relative Wealth Index'
+burned_area_source: 'C:/Users/Owner/OneDrive/Documents/Career/World Bank/CRP/data/GlobFire'
+oxford_global_source: '/Users/ipshitakarmakar/Dropbox (Personal)/WB/03-multi-scan-materials/Oxford Global Cities Data.csv'
+koeppen_source: '/Users/ipshitakarmakar/Dropbox (Personal)/WB/03-multi-scan-materials/Koeppen-Geiger-ASCII.csv'
+oxford_locations_source: '/Users/ipshitakarmakar/Dropbox (Personal)/WB/03-multi-scan-materials/oxford-locations.csv'
+un_data_source: '/Users/ipshitakarmakar/Dropbox (Personal)/WB/03-multi-scan-materials/undata-pop.csv'
+fwi_source: 'D:/World Bank/CRP/data/NASA FWI'
+lc_burn_source: "D:/World Bank/CRP/data/Landcover burnability/ESACCI.tif"
+temperature_source: "D:/World Bank/CRP/data/CRU/tmp"
+
+# non-data sources
+gostnets_path: 'C:/Users/Owner/OneDrive/Documents/Career/World Bank/CRP/repo/GOSTnets'
+
+# data outputs
+cloud_bucket: 'gee-test-20231019'
+
+# flood analysis parameters
+flood:
+  threshold: 15  # unit: cm
+  year:
+    - 2020
+    # - 2050
+    # - 2080
+  ssp:
+    - 1
+    - 2
+    - 3
+    - 5
+  prob_cutoff:  # unit: %
+    - 1
+    - 10
+
+# accessibility analysis parameters
+osm_query:
+  schools:
+    amenity:
+      - school
+      - kindergarten
+      - university
+      - college
+  health:
+    amenity:
+      - clinic
+      - hospital
+      - health
+  police:
+    amenity:
+      - police
+  fire:
+    amenity:
+      - fire_station
+isochrone:  # unit: m
+  schools:
+    - 800
+    - 1600
+    - 2400
+  health:
+    - 1000
+    - 2000
+    - 3000
+
+# FWI date range
+fwi_first_year: 2016
+fwi_last_year: 2021

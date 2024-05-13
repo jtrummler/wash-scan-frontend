@@ -140,20 +140,30 @@ paste0(str_replace(sections, "(^\\s*- )(.+$)", "\\1[\\2]"), anchors) %>% { cat("
 
 ::: text-column
 # {{< meta title >}}
-
 ## Executive Summary
 
+```{r}
+#| output: asis
+print_slide_text(slide_texts$executive_summary$executive_summary)
+```
+
 ## Setting the Context
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$setting_the_context$context)
+```
 
 ### Basic City Information
 
 ```{r}
-# Add a map layer? But it's just the AOI
+#| output: asis
+print_slide_text(slide_texts$setting_the_context$basic_city_info)
 ```
 
 ```{r}
-#| output: asis
-print_slide_text(slide_texts$setting_the_context$basic_city_info)
+# Add a map layer? But it's just the AOI
+# AOI in black, catchment in blue?
 ```
 
 ## Geography
@@ -178,7 +188,9 @@ print_slide_text(slide_texts$setting_the_context$basic_city_info)
 
 ### NDWI
 
-### NDMI
+### NDMI (annual)
+
+### NDMI (seasonal)
 
 ### SPEI
 
@@ -208,33 +220,12 @@ print_slide_text(slide_texts$setting_the_context$basic_city_info)
 
 
 
+###### CITY SCAN BELOW ######################################
 
 
-## Executive Summary
-```{r}
-#| output: asis
-print_slide_text(slide_texts$executive_summary$executive_summary)
-```
-
-## Setting the Context
-```{r}
-#| output: asis
-print_slide_text(slide_texts$setting_the_context$context)
-```
-
-### Basic City Information
-```{r}
-#| output: asis
-print_slide_text(slide_texts$setting_the_context$basic_city_info)
-```
-
-```{r}
-# Add a map layer? But it's just the AOI
-```
-
- 
 
 ### The State of Urban Infrastructure and Service Delivery
+
 ```{r}
 #| output: asis
 print_slide_text(slide_texts$setting_the_context$infrastructure_and_service_delivery)
@@ -245,6 +236,7 @@ print_slide_text(slide_texts$setting_the_context$infrastructure_and_service_deli
 ### Population Growth
 
 <!-- ![](generated/generated/plots/oxford-pop-growth.png) -->
+
 ```{r, output=TRUE}
 # saveRDS(pop_growth_plot, "generated/generated/plots/pop-growth.rds")
 ggplotly(readRDS("generated/plots/pop-growth.rds"))
@@ -258,6 +250,7 @@ print_slide_text(slide_texts$demographics$population_growth)
 ### Population Density (chart)
 
 <!-- ![](generated/plots/oxford-pop-density-scatter.png) -->
+
 ```{r, output=TRUE}
 # saveRDS(density_plot, "generated/plots/density.rds")
 ggplotly(readRDS("generated/plots/density.rds") + labs(y = "People per square kilometer"))
@@ -271,6 +264,7 @@ print_slide_text(slide_texts$demographics$population_density_chart)
 ### Population Distribution by Age & Sex
 
 <!-- ![](generated/plots/world-pop-age-sex.png) -->
+
 ```{r, output=TRUE}
 # saveRDS(pop_age_sex_plot, "generated/plots/age-sex-distribution.rds")
 ggplotly(readRDS("generated/plots/age-sex-distribution.rds"))
@@ -378,6 +372,7 @@ print_slide_text(slide_texts$economic_activity$economic_change)
 ```
 
 ### Social Distancing
+
 *(Need sample data)*
 
 ```{r}
@@ -615,6 +610,7 @@ print_slide_text(slide_texts$climate_conditions$vegetation)
 ```
 
 ### Forests & Deforestation
+
 ```{r}
 #| include: false
 forest <- fuzzy_read(spatial_dir, "ForestCover", rast)
@@ -730,6 +726,7 @@ print_slide_text(slide_texts$risk_identification$flooding_builtup_combined)
 ```
 
 ### Sea-level Rise
+
 *(Incomplete)*
 
 ```{r}
@@ -738,6 +735,7 @@ print_slide_text(slide_texts$risk_identification$sea_level_rise)
 ```
 
 ### Coastal Erosion
+
 *(Incomplete)*
 
 ```{r}
@@ -851,12 +849,14 @@ added_layers <- c(added_layers, "burnable-area")
 plot_burnable <- plot_static(data = burnable, yaml_key = "burnable")
 save_plot(plot = plot_burnable, filename = "burnable.png", directory = styled_maps_dir)
 ```
+
 ```{r}
 #| output: asis
 print_slide_text(slide_texts$risk_identification$burnable)
 ```
 
 ### Moisture
+
 ```{r}
 #| include: false
 moisture <- fuzzy_read(spatial_dir, "NDMI_Annual", rast)
@@ -880,6 +880,7 @@ print_slide_text(slide_texts$risk_identification$moisture)
 ```
 
 ### Historical Burnt Area
+
 ```{r}
 #| include: false
 # burnt_area <- fuzzy_read(spatial_dir, "???", rast_as_vect)
@@ -900,6 +901,7 @@ print_slide_text(slide_texts$risk_identification$burnt_area)
 ```
 
 ### Fire Potential
+
 ```{r}
 #| include: false
 fwi <- fuzzy_read(spatial_dir, "fwi", rast)

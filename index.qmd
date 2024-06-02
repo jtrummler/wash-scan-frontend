@@ -17,35 +17,24 @@ execute:
 # Only the github version of leaflet supports terra, in place of raster, which is now required as sp (on which raster depends) is being deprecated
 #devtools::install_github('rstudio/leaflet')
 #source()
-source("source/fns.R") #not sure why fns is not recognized
-install.packages("terra")
-install.packages("sf")
-install.packages("leaflet")
-install.packages("yaml")
-install.packaeges("stringr")
-install.packages("dplyr")
-install.packages("plotly")
-install.packages("ggspatial")
-install.packages("tidyterra")
-install.packages("cowplot")
-install.packages("glue")
-library(terra)
-library(sf)
-library(leaflet)
-library(yaml)
-library(stringr)
-library(dplyr)
-library(plotly)
-library(ggspatial)
-library(tidyterra)
-library(cowplot)
-library(glue)
-install.packages("readr")
-library(readr)
+# source("source/fns.R") #not sure why fns is not recognized
+# library(terra)
+# library(sf)
+# library(leaflet)
+# library(yaml)
+# library(stringr)
+# library(dplyr)
+# library(plotly)
+# library(ggspatial)
+# library(tidyterra)
+# library(cowplot)
+# library(glue)
+# install.packages("readr")
+# library(readr)
 source("source/fns.R", chdir = TRUE)
 source("source/helpers.R")
 
-city_dir <- file.path("mnt/", readLines("city-dir.txt")) # done
+city_dir <- file.path("mnt/city-directories") # done
 user_input_dir <- file.path(city_dir, "01-user-input/")
 process_output_dir <- file.path(city_dir, "02-process-output/")
 spatial_dir <- file.path(process_output_dir, "spatial/")
@@ -65,7 +54,7 @@ layer_params <- read_yaml('source/layers.yml')
 
 ```{r}
 #| freeze: auto
-source('_pre-render.R')
+# source('_pre-render.R')
 ```
 
 ```{r}
@@ -102,7 +91,7 @@ slide_texts <- merge_lists(city_text, generic_text)
 #| include: false
 
 # Define the AOI
-aoi <- st_zm(st_read(file.path(user_input_dir, "AOI")))
+aoi <- st_zm(st_read(file.path(user_input_dir, "AOI/aoiLuanda.geojson")))
 aoi_bounds <- st_bbox(aoi)
 static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05)
 
@@ -170,53 +159,354 @@ print_slide_text(slide_texts$setting_the_context$basic_city_info)
 
 ### Hydrography
 
+```{r}
+hydrography <- fuzzy_read(spatial_dir, "luanda_hydrography.shp", vect)
+
+# Interactive Plot (Leaflet)
+add_hydrography_layer <- create_layer_function(data = rast_as_vect(hydrography), yaml_key = "hydrography")
+all_maps <- add_hydrography_layer(all_maps)
+added_layers <- c(added_layers, "hydrography")
+
+# Static plot (PNG)
+plot_hydrography <- plot_static(data = hydrography, yaml_key = "hydrography")
+save_plot(plot = plot_hydrography, filename = "hydrography.png", directory = styled_maps_dir)
+plot_land_cover
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$hydrography)
+```
+
 ### Dams and Reservoirs
+
+```{r}
+dams_reservoirs <- fuzzy_read(spatial_dir, "luanda_dams_reservoirs.shp", vect)
+
+# Interactive Plot (Leaflet)
+add_dams_reservoirs_layer <- create_layer_function(data = dams_reservoirs, yaml_key = "dams-reservoirs")
+all_maps <- add_dams_reservoirs_layer(all_maps)
+added_layers <- c(added_layers, "dams-reservoirs")
+
+# Static plot (PNG)
+plot_dams_reservoirs <- plot_static(data = dams_reservoirs, yaml_key = "dams-reservoirs")
+save_plot(plot = plot_hydrography, filename = "dams_reservoirs.png", directory = styled_maps_dir)
+plot_dams_reservoirs
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$dams_reservoirs)
+```
 
 ### Land Cover
 
+```{r}
+land_cover <- fuzzy_read(spatial_dir, "luanda_lc.tif", rast)
+values(land_cover)[values(land_cover) == 0] <- NA
+
+# Interactive Plot (Leaflet)
+add_land_cover_layer <- create_layer_function(data = rast_as_vect(land_cover), yaml_key = "land_cover")
+all_maps <- add_land_cover_layer(all_maps)
+added_layers <- c(added_layers, "land-cover")
+
+# Static plot (PNG)
+plot_land_cover <- plot_static(data = land_cover, yaml_key = "land_cover")
+save_plot(plot = plot_land_cover, filename = "land_cover.png", directory = styled_maps_dir)
+plot_land_cover
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$land_cover)
+```
+
 ### Precipitation
+
+```{r}
+# Data point - work on html plot
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$precipitation)
+```
 
 ### Temperature
 
+```{r}
+# Data point - work on html plot
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$temperature)
+```
+
 ### Potential Evapotranspiration
 
+```{r}
+# Data point - work on html plot
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$potential_evapotranspiration)
+```
+
 ### Runoff
+
+```{r}
+# Get Rui advice - 4 different layers
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$geography$runoff)
+```
 
 ## Water Related Hazards
 
 ### Flooding
 
+
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$water_hazards$flooding)
+```
+
+
 ### NDWI
+
+```{r}
+#| include: false
+ndwi <- fuzzy_read(spatial_dir, "ndwi", rast)
+
+# Interactive Plot (Leaflet)
+add_ndwi_layer <- create_layer_function(data = rast_as_vect(ndwi), yaml_key = "ndwi")
+all_maps <- add_ndwi_layer(all_maps)
+added_layers <- c(added_layers, "ndwi")
+
+# Static plot (PNG)
+plot_ndwi <- plot_static(data = ndwi, yaml_key = "ndwi")
+save_plot(plot = plot_ndwi, filename = "ndwi.png", directory = styled_maps_dir)
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$water_hazards$ndwi)
+```
 
 ### NDMI (annual)
 
+```{r}
+#| include: false
+ndmi_annual <- fuzzy_read(spatial_dir, "ndmi_annual", rast)
+
+# Interactive Plot (Leaflet)
+add_ndmi_annual_layer <- create_layer_function(data = rast_as_vect(ndmi_annual), yaml_key = "ndmi-annual")
+all_maps <- add_ndmi_annual_layer(all_maps)
+added_layers <- c(added_layers, "ndmi_annual")
+
+# Static plot (PNG)
+plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
+save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$water_hazards$ndmi_annual)
+```
+
 ### NDMI (seasonal)
+
+```{r}
+#| include: false
+ndmi_seasonal <- fuzzy_read(spatial_dir, "ndmi_seasonal", rast)
+
+# Interactive Plot (Leaflet)
+add_ndmi_seasonal_layer <- create_layer_function(data = rast_as_vect(ndmi_seasonal), yaml_key = "ndmi-seasonal")
+all_maps <- add_ndmi_annual_layer(all_maps)
+added_layers <- c(added_layers, "ndmi_seasonal")
+
+# Static plot (PNG)
+plot_ndmi_seasonal <- plot_static(data = ndmi_seasonal, yaml_key = "ndmi-seasonal")
+save_plot(plot = plot_ndmi_seasonal, filename = "ndmi_seasonal.png", directory = styled_maps_dir)
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$water_hazards$ndmi_seasonal)
+```
 
 ### SPEI
 
+```{r}
+#| include: false
+spei <- fuzzy_read(spatial_dir, "spei", rast)
+
+# Interactive Plot (Leaflet)
+add_spei_layer <- create_layer_function(data = rast_as_vect(spei), yaml_key = "spei")
+all_maps <- add_spei_layer(all_maps)
+added_layers <- c(added_layers, "spei")
+
+# Static plot (PNG)
+plot_spei <- plot_static(data = spei, yaml_key = "spei")
+save_plot(plot = plot_spei, filename = "spei.png", directory = styled_maps_dir)
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$water_hazards$spei)
+```
+
 ### Water Pollution
+
+```{r}
+# data points
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$water_hazards$water_pollution)
+```
 
 ## Water Service Delivery
 
 ### Water Infrastructure
 
+```{r}
+water_infrastructure <- fuzzy_read(spatial_dir, "water_infrastructure.shp", vect)
+
+# Interactive Plot (Leaflet)
+add_water_infrastructure_layer <- create_layer_function(data = rast_as_vect(water_infrastructure), yaml_key = "water-infrastructure")
+all_maps <- add_hydrography_layer(all_maps)
+added_layers <- c(added_layers, "water_infrastructure")
+
+# Static plot (PNG)
+plot_water_infrastructure <- plot_static(data = water_infrastructure, yaml_key = "water-infrastructure")
+save_plot(plot = plot_water_infrastructure, filename = "water_infrastructure.png", directory = styled_maps_dir)
+plot_land_cover
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$service_delivery$water_infrastructure)
+```
+
 ### Water Infrastructure with Flood Overlay
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$service_delivery$water_infrastructure_flood)
+```
 
 ### Schools and Hospitals with Flood Overlay
 
+```{r}
+#| include: false
+# NON-STANDARD: Need to combine three separate shapefiles
+school_points <- fuzzy_read(spatial_dir, "schools$", FUN = vect) 
+schools_800 <- fuzzy_read(spatial_dir, "schools_800", FUN = vect)
+schools_1600 <- fuzzy_read(spatial_dir, "schools_1600", FUN = vect)
+schools_2400 <- fuzzy_read(spatial_dir, "schools_2400", FUN = vect)
+
+schools_1600_only <- erase(schools_1600, schools_800)
+schools_2400_only <- erase(schools_2400, schools_1600)
+school_zones <- Reduce(rbind, c(schools_800, schools_1600_only, schools_2400_only)) %>% select(-level_1, -nodez)
+
+# Interactive Plot (Leaflet)
+add_school_zones_layer <- create_layer_function(data = school_zones, yaml_key = "school_zones")
+add_school_points_layer <- create_layer_function(data = school_points, yaml_key = "school_points")
+all_maps <- add_school_zones_layer(all_maps) %>% add_school_points_layer()
+added_layers <- c(added_layers, "access-to-schools")
+
+# Static plot (PNG)
+plot_school <- plot_static(data = school_zones, yaml_key = "school_zones")
+plot_school <- plot_static(data = school_points, yaml_key = "school_points", baseplot = plot_school)
+save_plot(plot = plot_school, filename = "school.png", directory = styled_maps_dir)
+```
+
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$service_delivery$schools_hospitals_flood)
+```
+
 ### Access to Improved Water Sources with Built-Up Underlay and Schools and Hospitals Overlay
 
+```{r}
+#| include: false
+improved_water <- fuzzy_read(spatial_dir, "improved_water", vect)
+wsf <- fuzzy_read(spatial_dir, "built_up", vect)
+# Interactive Plot (Leaflet)
+add_improved_water_layer <- create_layer_function(data = improved_water, yaml_key = "improved-water")
+all_maps <- add_ndmi_annual_layer(all_maps)
+add_built_up_layer <- create_layer_function(data = wsf, yaml_key = "built-up")
+all_maps <- add_ndmi_annual_layer(all_maps)
+# insert schools/hospitals
+
+added_layers <- c(added_layers, "improved_water", "wsf")
+
+# Static plot (PNG)
+# plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
+# save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$service_delivery$improved_water_builtup_schools_hospitals)
+```
+
 ### Access to Improved Water Sources with Children and Elderly Overlay
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$service_delivery$improved_water_children_elderly)
+```
 
 ## Sanitation and Hygeine
 
 ### Access to Improved Sanitation Sources with Built-Up Underlay and Schools and Hospitals Overlay
 
+
+```{r}
+#| include: false
+improved_sanitation <- fuzzy_read(spatial_dir, "improved_sanitation", vect)
+# wsf <- fuzzy_read(spatial_dir, "built_up", vect)
+# Interactive Plot (Leaflet)
+add_improved_water_layer <- create_layer_function(data = improved_sanitation, yaml_key = "improved-sanitation")
+all_maps <- add_ndmi_annual_layer(all_maps)
+add_built_up_layer <- create_layer_function(data = wsf, yaml_key = "built-up")
+all_maps <- add_ndmi_annual_layer(all_maps)
+```
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$sanitation_and_hygeine$improved_sanitation_builtup_schools_hospitals)
+```
+
 ### Access to Improved Santiation Sources with Children and Elderly Overlay
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$sanitation_and_hygeine$improved_sanitation_children_elderly)
+```
 
 ### Access to Open Defecation Sources with Built-Up Underlay and Schools and Hospitals Overlay
 
+```{r}
+#| output: asis
+print_slide_text(slide_texts$sanitation_and_hygeine$open_defecation_builtup_schools_hospitals)
+```
+
 ### Access to Open Defecation Sources with Children, Women of Reproductive Age, and Elderly Overlay
+
+```{r}
+#| output: asis
+print_slide_text(slide_texts$sanitation_and_hygeine$open_defecation_children_elderly_women)
+```
 
 
 
@@ -936,53 +1226,3 @@ all_maps %>%
   # or maybe just an observable cell
 ```
 :::
-
-## Geography
-
-### Hydrography
-
-### Dams and Reservoirs
-
-### Land Cover
-
-### Precipitation
-
-### Temperature
-
-### Potential Evapotranspiration
-
-### Runoff
-
-## Water Related Hazards
-
-### Flooding
-
-### NDWI
-
-### NDMI
-
-### SPEI
-
-### Water Pollution
-
-## Water Service Delivery
-
-### Water Infrastructure
-
-### Water Infrastructure with Flood Overlay
-
-### Schools and Hospitals with Flood Overlay
-
-### Access to Improved Water Sources with Built-Up Underlay and Schools and Hospitals Overlay
-
-### Access to Improved Water Sources with Children and Elderly Overlay
-
-## Sanitation and Hygeine
-
-### Access to Improved Sanitation Sources with Built-Up Underlay and Schools and Hospitals Overlay
-
-### Access to Improved Santiation Sources with Children and Elderly Overlay
-
-### Access to Open Defecation Sources with Built-Up Underlay and Schools and Hospitals Overlay
-
-### Access to Open Defecation Sources with Children, Women of Reproductive Age, and Elderly Overlay

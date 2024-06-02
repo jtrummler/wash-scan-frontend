@@ -9,99 +9,77 @@ setting_the_context:
 # GEOGRAPHY
 geography:
   hydrography:
-    method:
-      footnote:
-geography:
+    method: Luanda has a robust surface water network, and Angola has a robust groundwater network. Angola has 47 major river basins and rivers spanning across 5 principal drainage areas while also sharing five international river basins. It is a predominantly upstream state.
+      footnote: This map uses the Hydro ATLAS data suite to observe hydrogaphic features in Luanda, namely, basins, rivers and lakes.
   dams_and_reservoirs:
-    method:
-      footnote:
-geography:
+    method: Built in the 1950s, the Cambambe Dam is one of Angola's oldest hydropower facilities. It underwent significant rehabilitation and expansion in recent years to increase its capacity. The dam provides hydroelectric power to Luanda and other nearby areas. Its reservoir, Lake Cambambe, serves as a source of water for various purposes, including irrigation and industrial use. The Capanda Dam and Lauca Dam are also recent dam projects nearby to Luanda predominantly for electricity generation.
+      footnote: Data is taken from GOODD and GRAND to visualize reservoirs and dams.
   land_cover:
-    method:
-      footnote:
-geography:
+    method: Land cover across Luanda is predominantly grasslands and built-up urbanization. With the boom in population during and post-civil war, the city continued to expand outward, both in terms of disorganized rural settlements and satellite towns, with nearly 1 million homes on a total of 100,000 hectares used. Another major urban expansion in 2011 resulted in 7 municipalities across the city. Angola has a diverse landscape, with the northern part of the country predominantly being tropical rainforests, and savanna deserts to the south. Luanda is a part of the Angolan scarp, a strip of savannah and woodlands, which causes high humidity and summer rains, endemic wildlife, and a mixture of forest, grasslands, and mangroves.
+      footnote: Data was taken from Google Earth Engine using European Space Agency land cover data from 2021 at a 10 meter resolution.
   precipitation:
-    method:
-      footnote:
-geography:
+    method: Precipitation in Luanda is often quite sparse. The rainiest months tend to be March and April, with the driest months being immediately after from May to October. Although rain events are infrequent, they are often intense. In 2023, consecutive days of heavy rainfall destroyed nearly 20,000 homes around Luanda.
+      footnote: This line plot visualizes monthly rainfall in millimeters for every month between 1993 and 2022.
   temperature:
-    method:
-      footnote:
-geography:
+    method: Luanda is a tropical savanna climate that consistently expereineces a warm climate throughout the year, generally ranging from 23°C (73°F) to 29°C (84°F). The highest temperatures generally occur during the wet season from November to April.
+      footnote: This line plot visualizes monthly temperature in degrees Celcius for the years 2021 and 2022, as well as a bar chart visualizing average monthly temperature. 
   potential_evapotranspiration:
-    method:
+    method: Luanda experiences a notably high rate of evapotranspiration, leading to prolonged and frequent drought events, particularly in regions with extensive agricultural activity. The city's extended dry seasons, often outweighing the shorter wet seasons, significantly impact agricultural productivity. With only approximately 3% of Luanda's agricultural land being irrigated, coupled with the presence of aquifer systems in Angola, evapotranspiration exacerbates meteorological concerns, posing substantial challenges to water availability and agricultural sustainability in the region.
       footnote:
-geography:
-  runoff:
-    method:
-      footnote:
+  runoff: 
+    method: Across the grassland and forested expanses further inland, both net runoff and surface/subsurface runoff exhibit elevated levels. Elevation emerges as a pivotal factor in shaping runoff velocity, with higher elevations accelerating runoff flow. Urbanized areas within Luanda witness a deceleration in runoff likely due to impermeable surfaces. Runoff reaches its slowest pace closest to the shoreline, where coastal dynamics likely play a role in runoff behavior.
+      footnote: This map visualizes both net runoff and fast surface and subsurface runoff.
 # WATER RELATED HAZARDS
 water_hazards:
-  flooding:
+  flooding: Luanda's rainy season spanning from October to May. Recent years have witnessed the city's susceptibility to flooding, with notable instances of devastation. In 2023, heavy rainfall over successive days led to the destruction of numerous homes in Luanda Providence, while 2021 saw over 11,000 individuals affected, 2,300 homes damaged, and 24 lives lost due to flooding. Despite infrequent rainfall throughout the season, its intensity presents significant risks, notably for the approximately 30 percent of Angola residents residing within 100 kilometers of the coastline, a demographic trend further exacerbated by urban migration. River inundation poses a pervasive threat across mainland areas, with coastal regions experiencing a heightened vulnerability to flooding. These at-risk locales often coincide with the city's agricultural lands, exacerbating the socio-economic repercussions of flooding on local farming communities. The imperative to fortify Luanda against flooding is paramount, not solely to safeguard its inhabitants but also due to its pivotal role as a major port city in Africa's blue economy. Given that an estimated 90 percent of the continent's import and export trade transits through coastal ports, enhancing resilience against flooding assumes critical importance for sustaining economic activities and ensuring the city's enduring prosperity.
     method:
       footnote:
-water_hazards:
   ndwi:
     method:
       footnote:
-water_hazards:
   ndmi_annual:
-    method:
+    method: NDMI is a measure to look at drought conditions in a region of interest. This measure looks at both a seasonal level (particularly looking during drier months) and an annual level. In both instances, the more vegetated regions in the northeast and south part of the city have positive NDWI values, indicating less dry conditions, but in the urbanized areas of the city, NDMI is consistently negative, reflecting drought's pervasiveness in the region.
       footnote:
-water_hazards:
   ndmi_seasonal:
     method:
       footnote:
-water_hazards:
   spei:
-    method:
+    method: The consistent pattern of smaller negative values across all time scales suggests a prevailing trend of slight precipitation deficits relative to potential evapotranspiration, indicating a tendency towards drier conditions over the analyzed period. Specifically, the 1-month SPEI values exhibit the most variability, indicating the influence of short-term weather patterns and seasonal fluctuations on precipitation and evapotranspiration dynamics. This variability likely reflects the sporadic nature of precipitation events, which may occur infrequently but intensively when they do happen. 
       footnote:
-water_hazards:
   water_pollution:
-    method:
+    method: Electrical Conductivity: While values remained stable from 1993 to 2002, there was a significant spike in electrical conductivity, indicating elevated levels of minerals potentially linked to runoff, industrial discharge, and wastewater. Between rapid urbanization and the end of the civil war, there may have been an increase in human-related minerals added to water. Nitrate-Nitrite Levels: Monitoring nitrate and nitrite levels may indicate potential public health and environmental stressors. Highest monthly peaks are consistently in April, generally the wettest month of the year in Luanda. Biological Oxygen Demand: With values generally below 2 mg/L, organic pollution in water sources are realtively low and are conducive to a healthy aquatic ecosystem.
       footnote:
 # SERVICE DELIVERY
 service_delivery:
   water_infrastructure:
-    method:
-      footnote:
-service_delivery:
-  water_infrastructure:
-    method:
-      footnote:
-service_delivery:
+    method: Water infrastructure in Luanda has been a chronic issue with reliable and accessible delivery of water resources. The infrastructure is aging and was designed for a pre-war population of nearly 500,000, but with Luanda's population approaching 2.7 million, it is not sustainable. With aging infrastructure, lack of maintenance, bureaucratic mismanagement, and the after impacts of water, Angola has made an increased commitment to rehabilitate existing systems, focusing predominantly in urban centers, for improvement and possible expansion. 
+      footnote: Water Source is defined as infrastructure involved in the collection, storage, and extraction of water from natural or artificial sources (eg. water well). Water Distribution is defined as infrastructure and systems responsible for delivering water from its source to consumers (eg. drinking water station). Water Management is defined as planning, operation, and maintenance of water-related infrastructure and resources (eg. storage tank). Data was extracted from Open Street Map.  
   water_infrastructure_flood:
-    method:
+    method: This map combines the previous water infrastructure and flooding maps to understand if critical water infrastructure is within a flood zone. Pluvial flooding events pose a greater threat to water infrastructure. Considering the different water infrastructure types all play crucial roles in either the access, delivery, or maintenance of already limited water resources, the interesection of infrastructre and flood zones pose several negative implications including water contamination, service disruption, water quality degradation, financial costs, and operational challenges.
       footnote:
-service_delivery:
   schools_hospitals_flood:
     method:
       footnote:
-service_delivery:
   improved_water_builtup_schools_hospitals:
-    method:
-      footnote:
-service_delivery:
-  improved_water_children_elderly:
-    method:
-      footnote:
+    method: Angola, a country abundant in water resources, struggles with access to potable water, with only 52% of its population having reliable access. Efforts by organizations like USAID have supported programs targeting improved water and handwashing services, particularly in primary schools, where access is critical for reducing water-borne diseases and tackling absenteeism, notably among girls. However, many must access highlighted water in remote provinces like Pedreira, underscoring the infrastructure gaps and logistical hurdles in ensuring equitable access to clean water across Angola, even from Luanda. However, much of the core urbanized area has seen considerable increase in water accessibility as of 2017. Moreover, water is most expensive in the densest mussques, further higlighting the bureaucracy of water attainability.
+      footnote: Built-up data comes from World Settlement Footprint (2015). Data on access to improved water sources comes from the Institute of Health Metrics and Evaluation (2017). Data on schools and hospitals comes from Open Street Map.
+  improved_water_children_elderly: 
+    method: Angola has one of the highest child mortality rates in the world, often linked and attributed to the spread of waterborne disease. Moreover, children, women and elderly are usually the main water fetchers within families, and can often commute for up to 2 hours one way to retrieve potable water. According to The Bergen Project, 37% of Luandan residents source water from city connected services, 25% source water from a private truck service, 22% source water from public stnadpipes and 16% source water from untreated rivers and illegal connections, highlighting the need for more reliable and connected pipe networks and access points.
+      footnote: Data on children under 5 and elderly over 60 comes from High Resolution Population Desnity Maps and Demographic Estimates.
 # SANITATION AND HYGEINE
 sanitation_and_hygeine:
   improved_sanitation_builtup_schools_hospitals:
-    method:
+    method: Per the map, the most urbanized areas seem to have the least access to sanitation sources. Hospitals, schools, and homes tend to have particularly pronounced inaccessibility to basic sanitation; half of primary schools lack basic sanitation stations and nearly two-thirds of households do as well. Despite this, there has been a significant increase in sanitation infrastructure in Luanda in the lasy few years, and Luanda is ahead of other Angolan cities as it is one of only 7 cities with basic wastewater management.
+      footnote: Data on access to improved sanitation sources comes from the Institute of Health Metrics and Evaluation (2017)
+  improved_sanitation_children_elderly:
+    method: The lack of access to sanitation services in the most urbanized parts of the city is often linked to a lack of investment in improved resources. Investment in basic sanitation on has been increasing for the past five years (approximately 102 billion Kz as of 2023), which shows the prioritization of improved sanitation services. Investment particularly benefits children due to the pronounced rates of diarrhea and malaria in children under 5.
       footnote:
-sanitation_and_hygeine:
-  improved_sanitation_builtup_schools_hospitals:
-    method:
-      footnote:
-sanitation_and_hygeine:
   open_defecation_builtup_schools_hospitals:
-    method:
-      footnote:
-sanitation_and_hygeine:
-  open_defecation_builtup_schools_hospitals:
-    method:
-      footnote:
+    method: While the rate of open defecation has reduced by more than half in the last two decades, Luanda still has a high dependence on open defection, most notably seen in completely urbanized areas of the city. Given 80% of the population lives in dense musseques, residents are more exposed to diarrhea diseases. Those living in peri-urban settlements with higher rates of reliance on open defecation can be up to 20 times more likely to get a diarrhea disease. Much investment has been concentrated on creating "open defecation free" communes to help increase accessibility to better waste practices.
+      footnote: Data on access to open defecation sources comes from the Institute of Health Metrics and Evaluation (2017)
+  open_defecation_children_elderly_women:
+    method: The urban core has the greatest reliance on open defecation, as well as the highest percentage of women of childbearing age, children, and elderly. Given the dense population of vulnerable populations in informal settlements lacking basic hygeinic defecation access, this perpetuates Luanda's longstanding problem of vectorborne and waterborne illness.
+      footnote:  Data on women of childbearing age comes from High Resolution Population Desnity Maps and Demographic Estimates.
 
 #     
 # # SECTION 3

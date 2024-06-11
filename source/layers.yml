@@ -23,94 +23,104 @@ template:
   # resolution or resolution_factor
   
 # Section 1 Geography
-hydrography:
-  fuzzy_string: hydrography
+hydrography: # good
   title: 'Hydrography'
   group_id: 'hydrography'
   palette: ['#d9d9d6', '#05e0f4', '#007ba7']
   labels: ['Basins', 'Rivers', 'Lakes']
-dams_reservoirs:
-  fuzzy_string: dams_reservoirs
+dams_reservoirs: # rui
   title: 'Dams and Reservoirs'
-  group_id: 'dams-reservoirs'
+  group_id: 'dams-and-reservoirs'
   palette: ['blue', 'red']
   labels: ['Reservoirs', 'Dams']
-land_cover:
-  fuzzy_string: landcover
+land_cover: # good
+  fuzzy_string: land-cover
   title: 'Land Cover'
   group_id: 'land-cover'
   factor: TRUE
   palette: ['transparent', '#277242', '#DEBA59', '#79A54F', '#E88B39', '#C62421', '#9C9085', '#DDDDDD', '#2491D7', '#707CBA', '#00C86E', '#f6e8a1']
   breaks: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '95', '100']
   labels: ['No data',  'Tree cover',  'Shrubland',  'Grassland',  'Cropland',  'Built-up',  'Bare/sparse vegetation',  'Snow and ice',  'Permanent water bodies',  'Herbaceous wetland',  'Mangroves',  'Moss and Lichen']
-# placeholder for runoff
+nc_mean:
+  title: 'Net Cell Runoff (mean)'
+  bins: 10
+  palette: ['#FEFFD9', '#41B7C4']
+  group_id: nc-mean
+nc_std:
+  title: 'Net Cell Runoff (standard deviation)'
+  bins: 10
+  palette: ['#FEFFD9', '#41B7C4']
+  group_id: nc-std
+qs_mean:
+  title: 'Fast Surface and Sub-Surface Runoff (mean)'
+  bins: 10
+  palette: ['#F5F2D8', '#843893']
+  group_id: qs-mean
+qs_std:
+  title: 'Fast Surface and Sub-Surface Runoff (standard deviation)'
+  bins: 10
+  palette: ['#F5F2D8', '#843893']
+  group_id: qs-std
 # Section 2 Water Related Hazards
-fluvial: # This will require pre-processing
-  factor: TRUE
-  palette: ['#05e0f4', '#03a0ae', '#026068']
-  labels: ['<1%', '1–10%', '>10%']
+flooding: # This will require pre-processing
+  palette: ['#05e0f4', '#03a0ae', '#026068', '#29d0ca', '#1d9490', '#115956']
+  labels: ['Fluvial (<1%)', 'Fluvial (1-10%)', 'Fluvial (>10%)', 'Pluvial (<1%)', 'Pluvial (1-10%)', 'Pluvial (>10%)']
   title: 'Fluvial flood probability'
   subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
-  group_id: fluvial-flooding
-pluvial: # This will require pre-processing
-  palette: ['#29d0ca', '#1d9490', '#115956']
-  labels: ['<1%', '1–10%', '>10%']
-  title: 'Pluvial flood probability'
-  subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
-  group_id: pluvial-flooding
+  group_id: flooding
 ndmi_annual:
-  fuzzy_string: ndmi-annual
+  fuzzy_string: annual-ndmi
   title: 'Normalized Differentiated Moisture Index - Annual'
   palette: ['#6C568C', '#607345']
   basemap: 'satellite'
-  group_id: 'ndmi-annual'
+  group_id: 'ndmi'
   bins: 10
 ndmi_seasonal:
-  fuzzy_string: ndmi-seasonal
+  fuzzy_string: seasonal-ndmi
   title: 'Normalized Differentiated Moisture Index - Seasonal'
   palette: ['#6C568C', '#607345']
   basemap: 'satellite'
-  group_id: 'ndmi-seasonal'
+  group_id: 'ndmi'
   bins: 10
-# Section 3 Service Delivery
+# Section 3 Service Delivery + Section 4 Sanitation/Hygeine
 water_infrastructure:
-  fuzzy_string: waterinfrastructure
+  fuzzy_string: water-infrastructure
   title: 'Water Infrastructure'
-  group_id: 'water-infrastructure'
   palette: ['#86608e', '#ea879c', '#832322']
   labels: ['Water Source', 'Water Distribution', 'Water Management']
+  group_id: 'water-infrastructure' # index group id should override here.. double check
 improved_water:
-  fuzzy_string: improvedwater
+  fuzzy_string: improved-water
   title: '% Access to Improved Water Sources'
   bins: 10
   palette: ['#eafdfd', '#447ab6']
   group_id: improved-water
 improved_sanitation:
-  fuzzy_string: improvedsanitation
+  fuzzy_string: improved-sanitation
   title: '% Access to Improved Sanitation Sources'
   bins: 10
   palette: ['#d7f9d0', '#0f894d']
   group_id: improved-sanitation
 open_defecation:
-  fuzzy_string: opendefecation
+  fuzzy_string: open-defecation
   title: '% Dependence to Open Defecation Sources'
   bins: 10
   palette: ['#e1fd4b', '#b46214']
   group_id: improved-sanitation
 children:
-  fuzzy_string: childrenunder5
+  fuzzy_string: children-under-5
   title: '% Children Under 5'
   bins: 10
   palette: ['#bd9ddd', '#fe85ad']
   group_id: children-under-5
 women:
-  fuzzy_string: women15to49
+  fuzzy_string: women-15-49
   title: '% Women of Childbearing Age'
   bins: 10
   palette: ['#bd9ddd', '#fe85ad']
   group_id: women-15-49
 elderly:
-  fuzzy_string: elderlyover60
+  fuzzy_string: elderly-over-60
   title: '% Elderly Over 60'
   bins: 10
   palette: ['#bd9ddd', '#fe85ad']
@@ -123,7 +133,7 @@ urbanized:
   factor: TRUE
   group_id: built-up
 schools_hospitals:
-  fuzzy_string: schoolshospitals
+  fuzzy_string: schools-hospitals
   title: 'Schools and Hospitals'
   group_id: 'schools-hospitals'
   palette: ['#ff00ff', '#yellow']

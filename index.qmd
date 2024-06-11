@@ -31,13 +31,16 @@ execute:
 # library(glue)
 # install.packages("readr")
 # library(readr)
+install.packages("ggtext")
+library(ggtext)
 source("source/fns.R", chdir = TRUE)
 source("source/helpers.R")
 
 city_dir <- file.path("mnt/city-directories") # done
 user_input_dir <- file.path(city_dir, "01-user-input/")
 process_output_dir <- file.path(city_dir, "02-process-output/")
-spatial_dir <- file.path(process_output_dir, "spatial/")
+#spatial_dir <- file.path(process_output_dir, "spatial/")
+spatial_dir <- file.path('C:/Users/jtrum/Wash/data_processing/spatial')
 output_dir <- file.path(city_dir, "03-render-output/")
 styled_maps_dir <- "generated/styled-maps/"
 
@@ -184,12 +187,12 @@ print_slide_text(slide_texts$geography$hydrography)
 dams_reservoirs <- fuzzy_read(spatial_dir, "luanda_dams_reservoirs.shp", vect)
 
 # Interactive Plot (Leaflet)
-add_dams_reservoirs_layer <- create_layer_function(data = dams_reservoirs, yaml_key = "dams-reservoirs")
+add_dams_reservoirs_layer <- create_layer_function(data = dams_reservoirs, yaml_key = "dams-and-reservoirs")
 all_maps <- add_dams_reservoirs_layer(all_maps)
-added_layers <- c(added_layers, "dams-reservoirs")
+added_layers <- c(added_layers, "dams-and-reservoirs")
 
 # Static plot (PNG)
-plot_dams_reservoirs <- plot_static(data = dams_reservoirs, yaml_key = "dams-reservoirs")
+plot_dams_reservoirs <- plot_static(data = dams_reservoirs, yaml_key = "dams-and-reservoirs")
 save_plot(plot = plot_hydrography, filename = "dams_reservoirs.png", directory = styled_maps_dir)
 plot_dams_reservoirs
 ```
@@ -206,7 +209,7 @@ land_cover <- fuzzy_read(spatial_dir, "luanda_lc.tif", rast)
 values(land_cover)[values(land_cover) == 0] <- NA
 
 # Interactive Plot (Leaflet)
-add_land_cover_layer <- create_layer_function(data = rast_as_vect(land_cover), yaml_key = "land_cover")
+add_land_cover_layer <- create_layer_function(data = rast_as_vect(land_cover), yaml_key = "land-cover")
 all_maps <- add_land_cover_layer(all_maps)
 added_layers <- c(added_layers, "land-cover")
 
@@ -269,6 +272,19 @@ print_slide_text(slide_texts$geography$runoff)
 
 ### Flooding
 
+```{r}
+flooding <- fuzzy_read(spatial_dir, "fathom_luanda.geojson", vect)
+
+# Interactive Plot (Leaflet)
+add_flooding_layer <- create_layer_function(data = flooding, yaml_key = "flooding")
+all_maps <- add_flooding_layer(all_maps)
+added_layers <- c(added_layers, "flooding")
+
+# Static plot (PNG)
+plot_flooding <- plot_static(data = flooding, yaml_key = "flooding")
+save_plot(plot = plot_flooding, filename = "flooding.png", directory = styled_maps_dir)
+plot_flooding
+```
 
 
 ```{r}
@@ -277,9 +293,7 @@ print_slide_text(slide_texts$water_hazards$flooding)
 ```
 
 
-### NDWI
-
-```{r}
+<!-- ```{r}
 #| include: false
 ndwi <- fuzzy_read(spatial_dir, "ndwi", rast)
 
@@ -290,70 +304,66 @@ added_layers <- c(added_layers, "ndwi")
 
 # Static plot (PNG)
 plot_ndwi <- plot_static(data = ndwi, yaml_key = "ndwi")
-save_plot(plot = plot_ndwi, filename = "ndwi.png", directory = styled_maps_dir)
-```
+save_plot(plot = plot_ndwi, filename = "ndwi.png", directory = styled_maps_dir) -->
+
 
 ```{r}
 #| output: asis
 print_slide_text(slide_texts$water_hazards$ndwi)
 ```
 
-### NDMI (annual)
+### Normalized Difference Moisture Index
 
 ```{r}
 #| include: false
-ndmi_annual <- fuzzy_read(spatial_dir, "ndmi_annual", rast)
+ndmi_annual <- fuzzy_read(spatial_dir, "ndmi_annual_luanda.tif", rast)
+ndmi_seasonal <- fuzzy_read(spatial_dir, "ndmi_seasonal_luanda.tif", rast)
 
 # Interactive Plot (Leaflet)
-add_ndmi_annual_layer <- create_layer_function(data = rast_as_vect(ndmi_annual), yaml_key = "ndmi-annual")
+add_ndmi_annual_layer <- create_layer_function(
+  data = rast_as_vect(ndmi_annual), 
+  yaml_key = "ndmi-annual",
+  group_id = "normalized-difference-moisture-index")
+
+add_ndmi_seasonal_layer <- create_layer_function(
+  data = rast_as_vect(ndmi_annual), 
+  yaml_key = "ndmi-seasonal",
+  group_id = "normalized-difference-moisture-index")
+
 all_maps <- add_ndmi_annual_layer(all_maps)
-added_layers <- c(added_layers, "ndmi_annual")
+all_maps <- add_ndmi_seasonal_layer(all_maps)
+
+added_layers <- c(added_layers, "normalized-difference-moisture-index")
 
 # Static plot (PNG)
-plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
-save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
+# plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
+# save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
 ```
 
 ```{r}
 #| output: asis
-print_slide_text(slide_texts$water_hazards$ndmi_annual)
+print_slide_text(slide_texts$water_hazards$ndmi)
 ```
 
-### NDMI (seasonal)
+
+### Standardized Precipitation Evapotranspiration Index
 
 ```{r}
 #| include: false
-ndmi_seasonal <- fuzzy_read(spatial_dir, "ndmi_seasonal", rast)
+spei <- fuzzy_read(spatial_dir, "spei_luanda.tif", rast)
 
 # Interactive Plot (Leaflet)
-add_ndmi_seasonal_layer <- create_layer_function(data = rast_as_vect(ndmi_seasonal), yaml_key = "ndmi-seasonal")
-all_maps <- add_ndmi_annual_layer(all_maps)
-added_layers <- c(added_layers, "ndmi_seasonal")
+add_spei_layer <- create_layer_function(
+  data = rast_as_vect(spei), 
+  yaml_key = "spei",
+  group_id = "standardized-precipitation-evapotranspiration-index")
 
-# Static plot (PNG)
-plot_ndmi_seasonal <- plot_static(data = ndmi_seasonal, yaml_key = "ndmi-seasonal")
-save_plot(plot = plot_ndmi_seasonal, filename = "ndmi_seasonal.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$water_hazards$ndmi_seasonal)
-```
-
-### SPEI
-
-```{r}
-#| include: false
-spei <- fuzzy_read(spatial_dir, "spei", rast)
-
-# Interactive Plot (Leaflet)
-add_spei_layer <- create_layer_function(data = rast_as_vect(spei), yaml_key = "spei")
 all_maps <- add_spei_layer(all_maps)
-added_layers <- c(added_layers, "spei")
+added_layers <- c(added_layers, "standardized-precipitation-evapotranspiration-index")
 
 # Static plot (PNG)
-plot_spei <- plot_static(data = spei, yaml_key = "spei")
-save_plot(plot = plot_spei, filename = "spei.png", directory = styled_maps_dir)
+# plot_spei <- plot_static(data = spei, yaml_key = "spei")
+# save_plot(plot = plot_spei, filename = "spei.png", directory = styled_maps_dir)
 ```
 
 ```{r}
@@ -377,17 +387,21 @@ print_slide_text(slide_texts$water_hazards$water_pollution)
 ### Water Infrastructure
 
 ```{r}
-water_infrastructure <- fuzzy_read(spatial_dir, "water_infrastructure.shp", vect)
+water_infrastructure <- fuzzy_read(spatial_dir, "water_infrastructure_luanda.shp", vect)
 
 # Interactive Plot (Leaflet)
-add_water_infrastructure_layer <- create_layer_function(data = rast_as_vect(water_infrastructure), yaml_key = "water-infrastructure")
+add_water_infrastructure_layer <- create_layer_function(
+  data = water_infrastructure, 
+  yaml_key = "water-infrastructure",
+  group_id = "water-infrastructure")
+
 all_maps <- add_hydrography_layer(all_maps)
 added_layers <- c(added_layers, "water_infrastructure")
 
-# Static plot (PNG)
-plot_water_infrastructure <- plot_static(data = water_infrastructure, yaml_key = "water-infrastructure")
-save_plot(plot = plot_water_infrastructure, filename = "water_infrastructure.png", directory = styled_maps_dir)
-plot_land_cover
+# # Static plot (PNG)
+# plot_water_infrastructure <- plot_static(data = water_infrastructure, yaml_key = "water-infrastructure")
+# save_plot(plot = plot_water_infrastructure, filename = "water_infrastructure.png", directory = styled_maps_dir)
+# plot_land_cover
 ```
 
 ```{r}
@@ -398,6 +412,34 @@ print_slide_text(slide_texts$service_delivery$water_infrastructure)
 ### Water Infrastructure with Flood Overlay
 
 ```{r}
+water_infrastructure <- fuzzy_read(spatial_dir, "water_infrastructure_luanda.shp", vect)
+flooding <- fuzzy_read(spatial_dir, "fathom_luanda.geojson", vect)
+
+# Interactive Plot (Leaflet)
+add_water_infrastructure_layer <- create_layer_function(
+  data = water_infrastructure, 
+  yaml_key = "water-infrastructure",
+  group_id = "water-infrastructure-with-flood-overlay")
+
+add_flooding_layer <- create_layer_function(
+  data = flooding, 
+  yaml_key = "flooding",
+  group_id = "water-infrastructure-with-flood-overlay")
+
+all_maps <- add_water_infrastructure_layer(all_maps)
+all_maps <- add_flooding_layer(all_maps)
+added_layers <- c(added_layers, "water-infrastructure-with-flood-overlay")
+
+all_maps <- add_hydrography_layer(all_maps)
+added_layers <- c(added_layers, "water_infrastructure")
+
+# # Static plot (PNG)
+# plot_water_infrastructure <- plot_static(data = water_infrastructure, yaml_key = "water-infrastructure")
+# save_plot(plot = plot_water_infrastructure, filename = "water_infrastructure.png", directory = styled_maps_dir)
+# plot_land_cover
+```
+
+```{r}
 #| output: asis
 print_slide_text(slide_texts$service_delivery$water_infrastructure_flood)
 ```
@@ -406,26 +448,31 @@ print_slide_text(slide_texts$service_delivery$water_infrastructure_flood)
 
 ```{r}
 #| include: false
-# NON-STANDARD: Need to combine three separate shapefiles
-school_points <- fuzzy_read(spatial_dir, "schools$", FUN = vect) 
-schools_800 <- fuzzy_read(spatial_dir, "schools_800", FUN = vect)
-schools_1600 <- fuzzy_read(spatial_dir, "schools_1600", FUN = vect)
-schools_2400 <- fuzzy_read(spatial_dir, "schools_2400", FUN = vect)
-
-schools_1600_only <- erase(schools_1600, schools_800)
-schools_2400_only <- erase(schools_2400, schools_1600)
-school_zones <- Reduce(rbind, c(schools_800, schools_1600_only, schools_2400_only)) %>% select(-level_1, -nodez)
+schools_hospitals <- fuzzy_read(spatial_dir, "schools_hospitals_luanda.shp", vect)
+flooding <- fuzzy_read(spatial_dir, "fathom_luanda.geojson", vect)
 
 # Interactive Plot (Leaflet)
-add_school_zones_layer <- create_layer_function(data = school_zones, yaml_key = "school_zones")
-add_school_points_layer <- create_layer_function(data = school_points, yaml_key = "school_points")
-all_maps <- add_school_zones_layer(all_maps) %>% add_school_points_layer()
-added_layers <- c(added_layers, "access-to-schools")
+add_water_infrastructure_layer <- create_layer_function(
+  data = water_infrastructure, 
+  yaml_key = "water-infrastructure",
+  group_id = "water-infrastructure-with-flood-overlay")
 
-# Static plot (PNG)
-plot_school <- plot_static(data = school_zones, yaml_key = "school_zones")
-plot_school <- plot_static(data = school_points, yaml_key = "school_points", baseplot = plot_school)
-save_plot(plot = plot_school, filename = "school.png", directory = styled_maps_dir)
+add_flooding_layer <- create_layer_function(
+  data = flooding, 
+  yaml_key = "flooding",
+  group_id = "water-infrastructure-with-flood-overlay")
+
+all_maps <- add_water_infrastructure_layer(all_maps)
+all_maps <- add_flooding_layer(all_maps)
+added_layers <- c(added_layers, "water-infrastructure-with-flood-overlay")
+
+all_maps <- add_hydrography_layer(all_maps)
+added_layers <- c(added_layers, "water_infrastructure")
+
+# # Static plot (PNG)
+# plot_water_infrastructure <- plot_static(data = water_infrastructure, yaml_key = "water-infrastructure")
+# save_plot(plot = plot_water_infrastructure, filename = "water_infrastructure.png", directory = styled_maps_dir)
+# plot_land_cover
 ```
 
 
@@ -438,16 +485,36 @@ print_slide_text(slide_texts$service_delivery$schools_hospitals_flood)
 
 ```{r}
 #| include: false
-improved_water <- fuzzy_read(spatial_dir, "improved_water", vect)
-wsf <- fuzzy_read(spatial_dir, "built_up", vect)
-# Interactive Plot (Leaflet)
-add_improved_water_layer <- create_layer_function(data = improved_water, yaml_key = "improved-water")
-all_maps <- add_ndmi_annual_layer(all_maps)
-add_built_up_layer <- create_layer_function(data = wsf, yaml_key = "built-up")
-all_maps <- add_ndmi_annual_layer(all_maps)
-# insert schools/hospitals
+wsf <- fuzzy_read(spatial_dir, "built_up_luanda.geojson", vect)
+improved_water <- fuzzy_read(spatial_dir, "improved_water_luanda.geojson", vect)
+schools_hospitals(spatial_dir, "schools_hospitals_luanda.geojson", vect)
 
-added_layers <- c(added_layers, "improved_water", "wsf")
+# Interactive Plot (Leaflet)
+add_wsf_layer <- create_layer_function(
+  data = wsf,
+  yaml_key = "wsf",
+  group_id = "access-to-improved-water-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+add_improved_water_layer <- create_layer_function(
+  data = improved_water, 
+  yaml_key = "improved-water",
+  group_id = "access-to-improved-water-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+add_schools_hospitals_layer <- create_layer_function(
+  data = schools_hospitals, 
+  yaml_key = "schools-hospitals",
+  group_id = "access-to-improved-water-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+# test ... plot_basemap() replace at first all_maps
+
+all_maps <- add_wsf_layer(all_maps)
+all_maps <- add_improved_water_layer(all_maps)
+all_maps <- add_schools_hospitals_layer(all_maps)
+
+added_layers <- c(added_layers, "access-to-improved-water-sources-with-built-up-underlay-and-schools-and-hospitals-overlay")
 
 # Static plot (PNG)
 # plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
@@ -462,6 +529,44 @@ print_slide_text(slide_texts$service_delivery$improved_water_builtup_schools_hos
 ### Access to Improved Water Sources with Children and Elderly Overlay
 
 ```{r}
+#| include: false
+improved_water <- fuzzy_read(spatial_dir, "improved_water_luanda.geojson", vect)
+children <- fuzzy_read(spatial_dir, "children_luanda.geojson", vect)
+elderly <- fuzzy_read(spatial_dir, "elderly_luanda.geojson", vect)
+
+# Interactive Plot (Leaflet)
+add_improved_water_layer <- create_layer_function(
+  data = improved_water, 
+  yaml_key = "improved-water",
+  group_id = "access-to-improved-water-sources-with-children-and-elderly-overlay"
+)
+
+add_children_layer <- create_layer_function(
+  data = children, 
+  yaml_key = "children",
+  group_id = "access-to-improved-water-sources-with-children-and-elderly-overlay"
+)
+
+add_elderly_layer <- create_layer_function(
+  data = elderly, 
+  yaml_key = "elderly",
+  group_id = "access-to-improved-water-sources-with-children-and-elderly-overlay"
+)
+# test ... plot_basemap() replace at first all_maps
+
+
+all_maps <- add_improved_water_layer(all_maps)
+all_maps <- add_children_layer(all_maps)
+all_maps <- add_elderly_layer(all_maps)
+
+added_layers <- c(added_layers, "access-to-improved-water-sources-with-children-and-elderly-overlay")
+
+# Static plot (PNG)
+# plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
+# save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
+```
+
+```{r}
 #| output: asis
 print_slide_text(slide_texts$service_delivery$improved_water_children_elderly)
 ```
@@ -470,16 +575,38 @@ print_slide_text(slide_texts$service_delivery$improved_water_children_elderly)
 
 ### Access to Improved Sanitation Sources with Built-Up Underlay and Schools and Hospitals Overlay
 
-
 ```{r}
 #| include: false
-improved_sanitation <- fuzzy_read(spatial_dir, "improved_sanitation", vect)
-# wsf <- fuzzy_read(spatial_dir, "built_up", vect)
+wsf <- fuzzy_read(spatial_dir, "built_up_luanda.geojson", vect)
+improved_sanitation <- fuzzy_read(spatial_dir, "improved_sanitation_luanda.geojson", vect)
+schools_hospitals(spatial_dir, "schools_hospitals_luanda.geojson", vect)
+
 # Interactive Plot (Leaflet)
-add_improved_water_layer <- create_layer_function(data = improved_sanitation, yaml_key = "improved-sanitation")
-all_maps <- add_ndmi_annual_layer(all_maps)
-add_built_up_layer <- create_layer_function(data = wsf, yaml_key = "built-up")
-all_maps <- add_ndmi_annual_layer(all_maps)
+add_wsf_layer <- create_layer_function(
+  data = wsf,
+  yaml_key = "wsf",
+  group_id = "access-to-improved-sanitation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+add_improved_sanitation_layer <- create_layer_function(
+  data = improved_sanitation, 
+  yaml_key = "improved-sanitation",
+  group_id = "access-to-improved-sanitation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+add_schools_hospitals_layer <- create_layer_function(
+  data = schools_hospitals, 
+  yaml_key = "schools-hospitals",
+  group_id = "access-to-improved-sanitation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+# test ... plot_basemap() replace at first all_maps
+
+all_maps <- add_wsf_layer(all_maps)
+all_maps <- add_improved_sanitation_layer(all_maps)
+all_maps <- add_schools_hospitals_layer(all_maps)
+
+added_layers <- c(added_layers, "access-to-improved-sanitation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay")
 ```
 
 ```{r}
@@ -490,6 +617,44 @@ print_slide_text(slide_texts$sanitation_and_hygeine$improved_sanitation_builtup_
 ### Access to Improved Santiation Sources with Children and Elderly Overlay
 
 ```{r}
+#| include: false
+improved_sanitation <- fuzzy_read(spatial_dir, "improved_sanitation_luanda.geojson", vect)
+children <- fuzzy_read(spatial_dir, "children_luanda.geojson", vect)
+elderly <- fuzzy_read(spatial_dir, "elderly_luanda.geojson", vect)
+
+# Interactive Plot (Leaflet)
+add_improved_sanitation_layer <- create_layer_function(
+  data = improved_sanitation, 
+  yaml_key = "improved-sanitation",
+  group_id = "access-to-improved-sanitation-sources-with-children-and-elderly-overlay"
+)
+
+add_children_layer <- create_layer_function(
+  data = children, 
+  yaml_key = "children",
+  group_id = "access-to-improved-sanitation-sources-with-children-and-elderly-overlay"
+)
+
+add_elderly_layer <- create_layer_function(
+  data = elderly, 
+  yaml_key = "elderly",
+  group_id = "access-to-improved-sanitation-sources-with-children-and-elderly-overlay"
+)
+# test ... plot_basemap() replace at first all_maps
+
+
+all_maps <- add_improved_sanitation_layer(all_maps)
+all_maps <- add_children_layer(all_maps)
+all_maps <- add_elderly_layer(all_maps)
+
+added_layers <- c(added_layers, "access-to-improved-sanitation-sources-with-children-and-elderly-overlay")
+
+# Static plot (PNG)
+# plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
+# save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
+```
+
+```{r}
 #| output: asis
 print_slide_text(slide_texts$sanitation_and_hygeine$improved_sanitation_children_elderly)
 ```
@@ -497,732 +662,93 @@ print_slide_text(slide_texts$sanitation_and_hygeine$improved_sanitation_children
 ### Access to Open Defecation Sources with Built-Up Underlay and Schools and Hospitals Overlay
 
 ```{r}
+#| include: false
+wsf <- fuzzy_read(spatial_dir, "built_up_luanda.geojson", vect)
+open_defecation <- fuzzy_read(spatial_dir, "open_defecation_luanda.geojson", vect)
+schools_hospitals(spatial_dir, "schools_hospitals_luanda.geojson", vect)
+
+# Interactive Plot (Leaflet)
+add_wsf_layer <- create_layer_function(
+  data = wsf,
+  yaml_key = "wsf",
+  group_id = "access-to-open-defecation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+add_open_defecation_layer <- create_layer_function(
+  data = open_defecation, 
+  yaml_key = "open-defecation",
+  group_id = "access-to-open-defecation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+add_schools_hospitals_layer <- create_layer_function(
+  data = schools_hospitals, 
+  yaml_key = "schools-hospitals",
+  group_id = "access-to-open-defecation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay"
+)
+
+# test ... plot_basemap() replace at first all_maps
+
+all_maps <- add_wsf_layer(all_maps)
+all_maps <- add_open_defecation(all_maps)
+all_maps <- add_schools_hospitals_layer(all_maps)
+
+added_layers <- c(added_layers, "access-to-open-defecation-sources-with-built-up-underlay-and-schools-and-hospitals-overlay")
+```
+
+```{r}
 #| output: asis
 print_slide_text(slide_texts$sanitation_and_hygeine$open_defecation_builtup_schools_hospitals)
 ```
 
-### Access to Open Defecation Sources with Children, Women of Reproductive Age, and Elderly Overlay
+### Access to Open Defecation Sources with Children, Women, and Elderly Overlay
+
+```{r}
+#| include: false
+open_defecation <- fuzzy_read(spatial_dir, "open_defecation_luanda.geojson", vect)
+children <- fuzzy_read(spatial_dir, "children_luanda.geojson", vect)
+elderly <- fuzzy_read(spatial_dir, "elderly_luanda.geojson", vect)
+women <- fuzzy_read(spatial_dir, "women_luanda.geojson", vect)
+
+# Interactive Plot (Leaflet)
+add_open_defecation_layer <- create_layer_function(
+  data = improved_water, 
+  yaml_key = "improved-sanitation",
+  group_id = "access-to-open-defecation-sources-with-children-women-and-elderly-overlay"
+)
+
+add_children_layer <- create_layer_function(
+  data = children, 
+  yaml_key = "children",
+  group_id = "access-to-improved-sanitation-sources-with-children-women-and-elderly-overlay"
+)
+
+add_elderly_layer <- create_layer_function(
+  data = elderly, 
+  yaml_key = "elderly",
+  group_id = "access-to-improved-sanitation-sources-with-children-women-and-elderly-overlay"
+)
+
+add_women_layer <- create_layer_function(
+  data = women, 
+  yaml_key = "women",
+  group_id = "access-to-improved-sanitation-sources-with-children-women-and-elderly-overlay"
+)
+# test ... plot_basemap() replace at first all_maps
+
+
+all_maps <- add_improved_sanitation_layer(all_maps)
+all_maps <- add_children_layer(all_maps)
+all_maps <- add_elderly_layer(all_maps)
+
+added_layers <- c(added_layers, "access-to-improved-sanitation-sources-with-children-women-and-elderly-overlay")
+
+# Static plot (PNG)
+# plot_ndmi_annual <- plot_static(data = ndmi_annual, yaml_key = "ndmi-annual")
+# save_plot(plot = plot_ndmi_annual, filename = "ndmi_annual.png", directory = styled_maps_dir)
+```
 
 ```{r}
 #| output: asis
 print_slide_text(slide_texts$sanitation_and_hygeine$open_defecation_children_elderly_women)
 ```
 
-
-
-###### CITY SCAN BELOW ######################################
-
-
-
-### The State of Urban Infrastructure and Service Delivery
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$setting_the_context$infrastructure_and_service_delivery)
-```
-
-## Population and Demographic Trends
-
-### Population Growth
-
-<!-- ![](generated/generated/plots/oxford-pop-growth.png) -->
-
-```{r, output=TRUE}
-# saveRDS(pop_growth_plot, "generated/generated/plots/pop-growth.rds")
-ggplotly(readRDS("generated/plots/pop-growth.rds"))
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$demographics$population_growth)
-```
-
-### Population Density (chart)
-
-<!-- ![](generated/plots/oxford-pop-density-scatter.png) -->
-
-```{r, output=TRUE}
-# saveRDS(density_plot, "generated/plots/density.rds")
-ggplotly(readRDS("generated/plots/density.rds") + labs(y = "People per square kilometer"))
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$demographics$population_density_chart)
-```
-
-### Population Distribution by Age & Sex
-
-<!-- ![](generated/plots/world-pop-age-sex.png) -->
-
-```{r, output=TRUE}
-# saveRDS(pop_age_sex_plot, "generated/plots/age-sex-distribution.rds")
-ggplotly(readRDS("generated/plots/age-sex-distribution.rds"))
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$demographics$population_distribution_age_sex)
-```
-
-### Population Density
-
-```{r}
-#| include: false
-# Read population data
-# Eventually, move fuzzy_read inside of create_layer_function
-pop <- fuzzy_read(spatial_dir, "population", rast)
-
-# Interactive Plot (Leaflet)
-add_pop_layer <- create_layer_function(data = rast_as_vect(pop), yaml_key = "population")
-all_maps <- add_pop_layer(all_maps)
-  # This could be put into the add_*_layer() functions themselves
-  # hideGroup("population-density")
-added_layers <- c(added_layers, "population-density")
-
-# Static plot (PNG)
-plot_pop <- plot_static(data = pop, yaml_key = "population")
-save_plot(plot = plot_pop, filename = "pop.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$demographics$population_density)
-```
-
-### Relative Wealth Index
-
-```{r}
-#| include: false
-# Read RWI
-# (Necessary to include ["rwi"] because shapefile has multiple layers)
-rwi <- fuzzy_read(spatial_dir, "rwi", FUN = vect)["rwi"]
-
-# Interactive Plot (Leaflet)
-add_rwi_layer <- create_layer_function(
-  data = rwi, yaml_key = "rwi",
-  labFormat = labelFormat(digits = 1))
-all_maps <- add_rwi_layer(all_maps)
-  # This could be put into the add_*_layer() functions themselves
-  # hideGroup("relative-wealth-index")
-added_layers <- c(added_layers, layer_params[["rwi"]]$group)
-
-# Static plot (PNG)
-plot_rwi <- plot_static(data = rwi, yaml_key = "rwi") #+ theme(legend.position = "none")
-save_plot(plot = plot_rwi, filename = "rwi.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$demographics$relative_wealth)
-```
-
-## Economic Activity
-
-### Economic Hotspots
-
-```{r}
-economic_activity <- fuzzy_read(spatial_dir, "avg_rad_sum", rast)
-
-# Interactive Plot (Leaflet)
-add_economic_activity_layer <- create_layer_function(
-  data = rast_as_vect(economic_activity), yaml_key = "economic_activity",
-  labFormat = labelFormat(digits = 2))
-all_maps <- add_economic_activity_layer(all_maps)
-added_layers <- c(added_layers, layer_params[["economic_activity"]]$group_id)
-
-# Static plot (PNG)
-plot_economic_activity <- plot_static(data = economic_activity, yaml_key = "economic_activity")
-save_plot(plot = plot_economic_activity, filename = "economic_activity.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$economic_activity$economic_hotspots)
-```
-
-### Change in Economic Hotspots
-
-```{r}
-economic_change <- fuzzy_read(spatial_dir, "linfit", rast)
-
-# Interactive Plot (Leaflet)
-add_economic_change_layer <- create_layer_function(data = rast_as_vect(economic_change), yaml_key = "economic_change")
-all_maps <- add_economic_change_layer(all_maps)
-added_layers <- c(added_layers, layer_params[["economic_change"]]$group_id)
-
-# Static plot (PNG)
-plot_economic_change <- plot_static(data = economic_change, yaml_key = "economic_change")
-save_plot(plot = plot_economic_change, filename = "economic_change.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$economic_activity$economic_change)
-```
-
-### Social Distancing
-
-*(Need sample data)*
-
-```{r}
-#| output: asis
-# print_slide_text(slide_texts$demographics$social_distancing)
-```
-
-## Built Form
-
-### Urban Extent and Change
-
-```{r}
-wsf <- fuzzy_read(spatial_dir, "wsf.*4326.tif$", rast)
-values(wsf)[values(wsf) == 0] <- NA
-
-# Interactive Plot (Leaflet)
-add_wsf_layer <- create_layer_function(data = rast_as_vect(wsf), yaml_key = "wsf")
-all_maps <- add_wsf_layer(all_maps)
-added_layers <- c(added_layers, layer_params[["wsf"]]$group_id)
-
-# Static plot (PNG)
-plot_wsf <- plot_static(data = wsf, yaml_key = "wsf")
-save_plot(plot = plot_wsf, filename = "wsf.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$built_form$wsf)
-```
-
-### Built-up Density
-
-```{r}
-#| include: false
-# impervious <- fuzzy_read(spatial_dir, "???")
-# add_impervious_layer <- create_layer_function(data = impervious, yaml_key = "impervious")
-
-# all_maps <- add_impervious_layer(all_maps)
-# added_layers <- c(added_layers, "built-up-density")
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$built_form$builtup_density)
-```
-
-### Land Cover
-
-```{r}
-land_cover <- fuzzy_read(spatial_dir, "lc.tif", rast)
-values(land_cover)[values(land_cover) == 0] <- NA
-
-# Interactive Plot (Leaflet)
-add_land_cover_layer <- create_layer_function(data = rast_as_vect(land_cover), yaml_key = "land_cover")
-all_maps <- add_land_cover_layer(all_maps)
-added_layers <- c(added_layers, "land-cover")
-
-# Static plot (PNG)
-plot_land_cover <- plot_static(data = land_cover, yaml_key = "land_cover")
-save_plot(plot = plot_land_cover, filename = "land_cover.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$built_form$land_cover)
-```
-
-### Intersection Density
-
-```{r}
-#| include: false
-# ERROR
-# intersections <- fuzzy_read(spatial_dir, "nodes", FUN = st_read)
-# add_intersections_layer <- create_layer_function(data = intersections, yaml_key = "intersections")
-
-# all_maps <- add_intersections_layer(all_maps)
-# added_layers <- c(added_layers, "intersection-density")
-```
-
-```{r}
-#| output: asis
-# print_slide_text(slide_texts$built_form$intersections)
-```
-
-### Access to Schools
-
-```{r}
-#| include: false
-# NON-STANDARD: Need to combine three separate shapefiles
-school_points <- fuzzy_read(spatial_dir, "schools$", FUN = vect) 
-schools_800 <- fuzzy_read(spatial_dir, "schools_800", FUN = vect)
-schools_1600 <- fuzzy_read(spatial_dir, "schools_1600", FUN = vect)
-schools_2400 <- fuzzy_read(spatial_dir, "schools_2400", FUN = vect)
-
-schools_1600_only <- erase(schools_1600, schools_800)
-schools_2400_only <- erase(schools_2400, schools_1600)
-school_zones <- Reduce(rbind, c(schools_800, schools_1600_only, schools_2400_only)) %>% select(-level_1, -nodez)
-
-# Interactive Plot (Leaflet)
-add_school_zones_layer <- create_layer_function(data = school_zones, yaml_key = "school_zones")
-add_school_points_layer <- create_layer_function(data = school_points, yaml_key = "school_points")
-all_maps <- add_school_zones_layer(all_maps) %>% add_school_points_layer()
-added_layers <- c(added_layers, "access-to-schools")
-
-# Static plot (PNG)
-plot_school <- plot_static(data = school_zones, yaml_key = "school_zones")
-plot_school <- plot_static(data = school_points, yaml_key = "school_points", baseplot = plot_school)
-save_plot(plot = plot_school, filename = "school.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$built_form$schools)
-```
-
-### Access to Healthcare
-
-```{r}
-#| include: false
-health_points <- fuzzy_read(spatial_dir, "health$", FUN = vect) 
-health_1000 <- fuzzy_read(spatial_dir, "health_1000", FUN = vect)
-health_2000 <- fuzzy_read(spatial_dir, "health_2000", FUN = vect)
-health_3000 <- fuzzy_read(spatial_dir, "health_3000", FUN = vect)
-
-health_zones <- Reduce(rbind, c(health_1000, health_2000, health_3000)) %>% select(-level_1, -nodez)
-
-# Interactive Plot (Leaflet)
-add_health_zones_layer <- create_layer_function(
-  data = health_zones, yaml_key = "health_zones")
-add_health_points_layer <- create_layer_function(data = health_points, yaml_key = "health_points")
-all_maps <- add_health_zones_layer(all_maps) %>% add_health_points_layer()
-added_layers <- c(added_layers, "access-to-healthcare")
-
-# Static plot (PNG)
-plot_health <- plot_static(data = health_zones, yaml_key = "health_zones")
-plot_health <- plot_static(data = health_points, yaml_key = "health_points", baseplot = plot_health)
-save_plot(plot = plot_health, filename = "health.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$built_form$health_facilities)
-```
-
-## Climate Conditions
-
-### Solar Photovoltaic Potential
-
-```{r}
-#| include: false
-solar <- fuzzy_read(spatial_dir, "solar", rast_as_vect)
-
-# Interactive Plot (Leaflet)
-add_solar_layer <- create_layer_function(data = (solar), yaml_key = "solar")
-all_maps <- add_solar_layer(all_maps)
-added_layers <- c(added_layers, "solar-photovoltaic-potential")
-
-# Static plot (PNG)
-plot_solar <- plot_static(data = solar, yaml_key = "solar")
-save_plot(plot = plot_solar, filename = "solar.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$climate_conditions$solar)
-```
-
-### Air Quality
-
-```{r}
-#| include: false
-air_quality <- fuzzy_read(spatial_dir, "air", rast)
-
-# Interactive Plot (Leaflet)
-add_air_quality_layer <- create_layer_function(data = rast_as_vect(air_quality), yaml_key = "air_quality")
-all_maps <- add_air_quality_layer(all_maps)
-added_layers <- c(added_layers, "air-quality")
-
-# Static plot (PNG)
-plot_air_quality <- plot_static(data = air_quality, yaml_key = "air_quality")
-save_plot(plot = plot_air_quality, filename = "air_quality.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$climate_conditions$air_quality)
-```
-
-### Summer Surface Temperature
-
-```{r}
-#| include: false
-summer_lst <- fuzzy_read(spatial_dir, "summer", FUN = rast)
-
-# Interactive Plot (Leaflet)
-summer_lst_resample <- summer_lst %>%
-  aggregate(fact = 4, fun = "max") %>% # Is this the right function choice?
-  as.polygons(digits = 0)
-add_summer_lst_layer <- create_layer_function(data = summer_lst_resample, yaml_key = "summer_lst")
-all_maps <- add_summer_lst_layer(all_maps)
-added_layers <- c(added_layers, "summer-surface-temperature")
-
-# Static plot (PNG)
-plot_summer_lst <- plot_static(data = summer_lst, yaml_key = "summer_lst")
-save_plot(plot = plot_summer_lst, filename = "summer_lst.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$climate_conditions$summer_lst)
-```
-
-### Vegetated Areas
-
-```{r}
-#| include: false
-vegetation <- fuzzy_read(spatial_dir, "NDVI_Annual", rast)
-
-# Interactive Plot (Leaflet)
-vegetation_poly <- vegetation %>%
-  aggregate(fact = 10, fun = "mean") %>%
-  as.polygons(digits = 2, aggregate = T) # Is this larger with/without aggregate?
-add_vegetation_layer <- create_layer_function(data = vegetation_poly, yaml_key = "vegetation")
-all_maps <- add_vegetation_layer(all_maps)
-added_layers <- c(added_layers, "vegetated-areas")
-
-# Static plot (PNG)
-plot_vegetation <- plot_static(data = vegetation, yaml_key = "vegetation")
-save_plot(plot = plot_vegetation, filename = "vegetation.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$climate_conditions$vegetation)
-```
-
-### Forests & Deforestation
-
-```{r}
-#| include: false
-forest <- fuzzy_read(spatial_dir, "ForestCover", rast)
-values(forest)[values(forest) == 0] <- NA
-
-# Interactive Plot (Leaflet)
-add_forest_layer <- create_layer_function(data = rast_as_vect(forest), yaml_key = "forest")
-all_maps <- add_forest_layer(all_maps)
-
-# Static plot (PNG)
-plot_forest <- plot_static(data = forest, yaml_key = "forest")
-save_plot(plot = plot_forest, filename = "forest.png", directory = styled_maps_dir)
-
-deforest <- fuzzy_read(spatial_dir, "Deforest", rast)
-deforest[[1]] <- deforest[[1]] + 2000 # The file only shows the 1s and 10s column for the year
-deforest[[1]][deforest[[1]] == 2000] <- NA
-
-# Interactive Plot (Leaflet)
-add_deforest_layer <- create_layer_function(data = rast_as_vect(deforest), yaml_key = "deforest")
-all_maps <- add_deforest_layer(all_maps)
-added_layers <- c(added_layers, "forests-deforestation")
-
-# Static plot (PNG)
-plot_deforest <- plot_static(deforest, "deforest")
-save_plot(plot = plot_deforest, filename = "deforest.png", directory = styled_maps_dir)
-
-plot_forest_deforest <- plot_static(deforest, "deforest", baseplot = plot_forest)
-save_plot(plot = plot_forest_deforest, filename = "forest_deforest.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$climate_conditions$forest)
-```
-
-## Risk Identification
-
-### Fluvial Flooding
-
-```{r}
-#| include: false
-
-# NOTE: Fluvial and pluvial use different methods, and the layers.yml differs for them
-# Fluvial demonstrates class date, while pluvial demonstrates (pseudo) continuous data
-fluvial_low <- fuzzy_read(spatial_dir, "fluvial.*lt1", rast)
-fluvial_med <- fuzzy_read(spatial_dir, "fluvial.*1-10", rast) * 10
-fluvial_high <- fuzzy_read(spatial_dir, "fluvial.*gt10", rast) * 100
-
-# Excluding fluvial_high because it seems to be an error
-fluvial <- max(fluvial_low, fluvial_med, na.rm = T)
-
-# Interactive Plot (Leaflet)
-add_fluvial_layer <- create_layer_function(data = rast_as_vect(fluvial), yaml_key = "fluvial")
-all_maps <- add_fluvial_layer(all_maps)
-added_layers <- c(added_layers, "fluvial-flooding")
-
-# Static plot (PNG)
-plot_fluvial <- plot_static(fluvial, yaml_key = "fluvial")
-save_plot(plot = plot_fluvial, filename = "fluvial.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$flooding_builtup_fluvial)
-```
-
-### Pluvial Flooding
-
-```{r}
-#| include: false
-pluvial_low <- fuzzy_read(spatial_dir, "pluvial.*lt1", rast)
-pluvial_med <- fuzzy_read(spatial_dir, "pluvial.*1-10", rast) * 10
-pluvial_high <- fuzzy_read(spatial_dir, "pluvial.*gt10", rast) * 11
-
-# Excluding pluvial_high because it seems to be an error
-pluvial <- max(pluvial_low, pluvial_med, na.rm = T) %>%
-  aggregate(fact = 4, fun = "max")
-
-# Interactive Plot (Leaflet)
-add_pluvial_layer <- create_layer_function(data = rast_as_vect(pluvial), yaml_key = "pluvial")
-all_maps <- add_pluvial_layer(all_maps)
-added_layers <- c(added_layers, "pluvial-flooding")
-
-# Static plot (PNG)
-plot_pluvial <- plot_static(rast_as_vect(pluvial), yaml_key = "pluvial")
-save_plot(plot = plot_pluvial, filename = "pluvial.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$flooding_builtup_pluvial)
-```
-
-### Combined Fluvial & Pluvial Flooding
-
-```{r}
-#| include: false
-combined_fluvial_pluvial <- max(fluvial, pluvial, na.rm = T)
-
-# Interactive Plot (Leaflet)
-add_combined_fluvial_pluvial_layer <- create_layer_function(data = rast_as_vect(combined_fluvial_pluvial), yaml_key = "flooding_combined")
-all_maps <- add_combined_fluvial_pluvial_layer(all_maps)
-added_layers <- c(added_layers, "combined-fluvial-pluvial-flooding")
-
-# Static plot (PNG)
-plot_combined_fluvial_fluvial <- plot_static(rast_as_vect(combined_fluvial_pluvial), yaml_key = "flooding_combined")
-save_plot(plot = plot_fluvial, filename = "fluvial.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$flooding_builtup_combined)
-```
-
-### Sea-level Rise
-
-*(Incomplete)*
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$sea_level_rise)
-```
-
-### Coastal Erosion
-
-*(Incomplete)*
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$coastal_erosion)
-```
-
-### Elevation
-
-```{r}
-#| include: false
-elevation <- fuzzy_read(spatial_dir, "elevation", FUN = rast)
-elev_breaks <- break_pretty2(values(elevation), method = "interval")
-for (i in seq_along(elev_breaks)) {
-    elevation[elevation >= elev_breaks[i] & elevation < c(elev_breaks, 1e6)[i+1]] <- elev_breaks[i]
-}
-elevation <- as.polygons(elevation)
-
-# Interactive Plot (Leaflet)
-add_elevation_layer <- create_layer_function(data = elevation, yaml_key = "elevation")
-all_maps <- add_elevation_layer(all_maps)
-added_layers <- c(added_layers, "elevation")
-
-# Static plot (PNG)
-plot_elevation <- plot_static(data = elevation, yaml_key = "elevation", breaks = elev_breaks)
-save_plot(plot = plot_elevation, filename = "elevation.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$elevation)
-```
-
-### Slope
-
-```{r}
-#| include: false
-# FIX: Currently plotting as raster because much faster, but => no label on hover
-slope <- fuzzy_read(spatial_dir, "elevation", FUN = rast) %>%
-  terrain(v="slope")
-
-# Interactive Plot (Leaflet)
-add_slope_layer <- create_layer_function(data = slope, yaml_key = "slope")
-all_maps <- add_slope_layer(all_maps)
-added_layers <- c(added_layers, "slope")
-
-# Static plot (PNG)
-plot_slope <- plot_static(data = slope, yaml_key = "slope")
-save_plot(plot = plot_slope, filename = "slope.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$slope)
-```
-
-### Landslides
-
-```{r}
-#| include: false
-landslides <- fuzzy_read(spatial_dir, "landslide", rast)
-
-# Interactive Plot (Leaflet)
-add_landslides_layer <- create_layer_function(data = rast_as_vect(landslides), yaml_key = "landslides")
-all_maps <- add_landslides_layer(all_maps)
-added_layers <- c(added_layers, "landslides")
-
-# Static plot (PNG)
-plot_landslides <- plot_static(data = landslides, yaml_key = "landslides")
-save_plot(plot = plot_landslides, filename = "landslides.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$landslides)
-```
-
-### Liquefaction
-
-```{r}
-#| include: false
-liquefaction <- fuzzy_read(spatial_dir, "liquefaction.tif$", rast_as_vect)
-
-# Interactive Plot (Leaflet)
-add_liquefaction_layer <- create_layer_function(data = liquefaction, yaml_key = "liquefaction")
-all_maps <- add_liquefaction_layer(all_maps)
-added_layers <- c(added_layers, "liquefaction")
-
-# Static plot (PNG)
-plot_liquefaction <- plot_static(data = liquefaction, yaml_key = "liquefaction")
-save_plot(plot = plot_liquefaction, filename = "liquefaction.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$liquefaction)
-```
-
-### Burnable Area
-
-```{r}
-#| include: false
-burnable <- fuzzy_read(spatial_dir, "burn", rast_as_vect)
-
-# Interactive Plot (Leaflet)
-add_burnable_layer <- create_layer_function(data = burnable, yaml_key = "burnable")
-all_maps <- add_burnable_layer(all_maps)
-added_layers <- c(added_layers, "burnable-area")
-
-# Static plot (PNG)
-plot_burnable <- plot_static(data = burnable, yaml_key = "burnable")
-save_plot(plot = plot_burnable, filename = "burnable.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$burnable)
-```
-
-### Moisture
-
-```{r}
-#| include: false
-moisture <- fuzzy_read(spatial_dir, "NDMI_Annual", rast)
-
-# Interactive Plot (Leaflet)
-moisture_poly <- moisture %>%
-  aggregate(fact = 10, fun = "mean") %>%
-  as.polygons(digits = 2, aggregate = T) # Is this larger with/without aggregate?
-add_moisture_layer <- create_layer_function(data = moisture_poly, yaml_key = "moisture")
-all_maps <- add_moisture_layer(all_maps)
-added_layers <- c(added_layers, "moisture")
-
-# Static plot (PNG)
-plot_moisture <- plot_static(data = moisture_poly, yaml_key = "moisture")
-save_plot(plot = plot_moisture, filename = "moisture.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$moisture)
-```
-
-### Historical Burnt Area
-
-```{r}
-#| include: false
-# burnt_area <- fuzzy_read(spatial_dir, "???", rast_as_vect)
-# 
-# # Interactive Plot (Leaflet)
-# add_burnt_area_layer <- create_layer_function(data = burnt_area, yaml_key = "burnt_area")
-# all_maps <- add_burnt_area_layer(all_maps)
-# added_layers <- c(added_layers, "burnt_area")
-# 
-# # Static plot (PNG)
-# plot_burnt_area <- plot_static(data = burnt_area, yaml_key = "burnt_area")
-# save_plot(plot = plot_burnt_area, filename = "burnt_area.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$burnt_area)
-```
-
-### Fire Potential
-
-```{r}
-#| include: false
-fwi <- fuzzy_read(spatial_dir, "fwi", rast)
-
-# Interactive Plot (Leaflet)
-add_fwi_layer <- create_layer_function(data = fwi, yaml_key = "fwi")
-all_maps <- add_fwi_layer(all_maps)
-added_layers <- c(added_layers, "fire-potential")
-
-# Static plot (PNG)
-# Commenting out because of large size (Need to change tile zoom level and static bounds)
-# plot_fwi <- plot_static(data = fwi, yaml_key = "fwi")
-# save_plot(plot = plot_fwi, filename = "fwi.png", directory = styled_maps_dir)
-```
-
-```{r}
-#| output: asis
-print_slide_text(slide_texts$risk_identification$fwi)
-```
-:::
-
-::: maps
-```{r}
-#| output: true
-all_maps %>%
-  add_aoi() %>%
-  addLayersControl(
-    overlayGroups = added_layers,
-    options = layersControlOptions(collapsed = TRUE))
-
-  # If I want to use javascript directly I could use htmlwidgets::onRender(),
-  # or maybe just an observable cell
-```
-:::

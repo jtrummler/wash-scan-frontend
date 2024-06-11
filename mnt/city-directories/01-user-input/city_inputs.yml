@@ -5,29 +5,30 @@ city_name: 'Luanda'
 # (assuming python can read shapefile from directory name) 
 # AOI_path: "mnt/city-directories/01-user-input/AOI"
 AOI_path: "C:/Users/jtrum/Wash/data_processing/aoiLuanda.geojson"
+catchment_path: "C:/Users/jtrum/Wash/data_processing/aoiLuanda.geojson"
 country_name: 'Angola'
 country_iso3: 'ANG'
 
-# Benchmark cities
-# - When multiple countries, add country name as key before city (e.g. "- Armenia: Yerevan")
-# - When not providing manual benchmark cities, simply write `null` (without ticks)
-bm_cities_manual:
-  - Yerevan
-  - Gyumri
-  - Areni
-  - Dilijan
-nearby_countries_string: "georgia|turkey|iran|azerbaijan|russia"
+# # Benchmark cities
+# # - When multiple countries, add country name as key before city (e.g. "- Armenia: Yerevan")
+# # - When not providing manual benchmark cities, simply write `null` (without ticks)
+# bm_cities_manual:
+#   - Yerevan
+#   - Gyumri
+#   - Areni
+#   - Dilijan
+# nearby_countries_string: "georgia|turkey|iran|azerbaijan|russia"
 
-# data sources (will override global_inputs if duplicates exist)
-# put False as default value if no data exists for a city
-flood_source: False
-impervious_source: False
+# # data sources (will override global_inputs if duplicates exist)
+# # put False as default value if no data exists for a city
+# flood_source: False
+# impervious_source: False
 
-# accessibility analysis parameters
-# can add to the OSM POIs in global_inputs; will override global_inputs if duplicates exist
+# # accessibility analysis parameters
+# # can add to the OSM POIs in global_inputs; will override global_inputs if duplicates exist
 
-# land surface temperature parameters
-# first_hot_month: 7
-# last_hot_month: 9
-first_year: 2014
-last_year: 2023
+# # land surface temperature parameters
+# # first_hot_month: 7
+# # last_hot_month: 9
+# first_year: 2014
+# last_year: 2023

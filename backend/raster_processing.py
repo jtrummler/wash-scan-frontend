@@ -7,7 +7,6 @@ with open("../mnt/city-directories/01-user-input/menu.yml", 'r') as f:
 
 if menu['raster_processing']:
     print('run raster_processing')
-    
     import os
     import math
     import csv

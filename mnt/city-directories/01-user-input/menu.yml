@@ -1,46 +1,57 @@
 # raster processing
 # if the first item is False, all other items in this section will be skipped
 raster_processing: True
-population: True
+fathom: True # double check why i need to add all of these - cause they're rasters?
 wsf: True
-elevation: True
-slope: True
-solar: True
-air: True
-flood: True
-flood_coastal: True
-flood_fluvial: True
-flood_pluvial: True
-landslide: True
-liquefaction: True
-impervious: False
-demographics: True
+children: True
+elderly: True
+women: True
+water: True
+sanitation: True
+defecation: True
 
-# GEE
-landcover: True
-summer_lst: True
-nightlight: True
-green: True
-forest: True
-ndmi: True
 
-# accessibility
-accessibility: True
 
-# RWI
-rwi: True
+# population: True
+# wsf: True
+# elevation: True
+# slope: True
+# solar: True
+# air: True
+# flood: True
+# flood_coastal: True
+# flood_fluvial: True
+# flood_pluvial: True
+# landslide: True
+# liquefaction: True
+# impervious: False
+# demographics: True
 
-# wildfire
-burned_area: True
-fwi: True
-landcover_burn: True
+# # GEE
+# landcover: True
+# summer_lst: True
+# nightlight: True
+# green: True
+# forest: True
+# ndmi: True
 
-# road network
-road_network: True
+# # accessibility
+# accessibility: True
 
-# stats
-# flood_timeline and earthquake_timeline unclear
-all_stats: True
+# # RWI
+# rwi: True
 
-# toolbox
-toolbox: True
+# # wildfire
+# burned_area: True
+# fwi: True
+# landcover_burn: True
+
+# # road network
+# road_network: True
+
+# # stats
+# # flood_timeline and earthquake_timeline unclear
+# all_stats: True
+
+# # toolbox
+# toolbox: True

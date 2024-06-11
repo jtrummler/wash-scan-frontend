@@ -56,6 +56,28 @@ if menu['raster_processing']:
     b_path = 'C:/Users/jtrum/Wash/data_processing/b_shps/'
     c_path = 'C:/Users/jtrum/Wash/data_processing/c_geojsons/'
 
+# HYDROGRAPHY
+
+    def hydrography(lakes_fp, rivers_fp, basins_fp, cat, name_l, city_l, c_path):
+    #load
+        lakes_gdf = gpd.read_file(lakes_fp).to_crs('EPSG:4326')
+        rivers_gdf = gpd.read_file(rivers_fp).to_crs('EPSG:4326')
+        basins_gdf = gpd.read_file(basins_fp).to_crs('EPSG:4326')
+        #clip
+        lakes_clip = gpd.clip(lakes_gdf, cat)
+        rivers_clip = gpd.clip(rivers_gdf, cat)
+        basins_clip = gpd.clip(basins_gdf, cat)
+        #add the feature column
+        lakes_clip['Feature'] = 'Lakes'
+        rivers_clip['Feature'] = 'Rivers'
+        basins_clip['Feature'] = 'Basins'
+        #combine the clipped dataframes
+        combined_gdf = gpd.GeoDataFrame(pd.concat([basins_clip[['Feature', 'geometry']],
+                                                lakes_clip[['Feature', 'geometry']],
+                                                rivers_clip[['Feature', 'geometry']]]))
+        combined_gdf.to_file(f'{c_path}hydrography_{name_l}_{city_l}.geojson', driver='GeoJSON')
+        return combined_gdf
+
 # FATHOM
     def fathom_rasters(file_list, cat):
         for file_path in file_list:
@@ -131,6 +153,33 @@ if menu['raster_processing']:
         pct_under1 = gpd.GeoDataFrame(geometry=filtered_geometries)
         pct_under1.to_file(f'{c_path}Fathom_Under1pct_{name}_{city_l}.geojson', driver='GeoJSON')
         return pct_under1
+    
+    def flood_gdf(file_names, c_path, city_l):
+        file_names = ['FU_1in5', 'FU_1in10', 'FU_1in20', 'FU_1in50', 'FU_1in75', 'FU_1in100', 'FU_1in200', 'FU_1in250', 'FU_1in500', 'FU_1in1000', 'P_1in5', 'P_1in10', 'P_1in20', 'P_1in50', 'P_1in75', 'P_1in100', 'P_1in200', 'P_1in250', 'P_1in500', 'P_1in1000']
+        dataframes = load_geojsons(file_names, c_path)
+        FU_1in5, FU_1in10, FU_1in20, FU_1in50, FU_1in75, FU_1in100, FU_1in200, FU_1in250, FU_1in500, FU_1in1000, P_1in5, P_1in10, P_1in20, P_1in50, P_1in75, P_1in100, P_1in200, P_1in250, P_1in500, P_1in1000 = dataframes
+        
+        FU_10pct = create_10pct(FU_1in10, FU_1in5, "FU")
+        FU_1to10pct = create_1to10(FU_1in20, FU_1in50, FU_1in75, "FU")
+        FU_1pct = create_under1(FU_1in100, FU_1in200, FU_1in250, FU_1in500, FU_1in1000, "FU")
+        
+        P_10pct = create_10pct(P_1in10, P_1in5, "P")
+        P_1to10pct = create_1to10(P_1in20, P_1in50, P_1in75, "P")
+        P_1pct = create_under1(P_1in100, P_1in200, P_1in250, P_1in500, P_1in1000, "P")
+        
+        scenarios = [
+            ('Fluvial (<1%)', FU_1pct),
+            ('Fluvial (1-10%)', FU_1to10pct),
+            ('Fluvial (>10%)', FU_10pct),
+            ('Pluvial (<1%)', P_1pct),
+            ('Pluvial (1-10%)', P_1to10pct),
+            ('Pluvial (>10%)', P_10pct),
+        ]
+        
+        combined_gdf = gpd.GeoDataFrame(pd.concat(
+            [scenario_gdf.assign(Scenario=scenario_name) for scenario_name, scenario_gdf in scenarios],
+            ignore_index=True
+        ))
 
 ### OPEN STREET MAP
 tags_list = [
@@ -211,3 +260,16 @@ def builtup_union(df):
     wsf_union.crs = {'init': 'epsg:4326'}
     wsf_union.to_file(f'{c_path}wsf_final_{city_l}.geojson', driver='GeoJSON')
     return wsf_union
+
+def hex():
+    gdf = aoi.copy()
+    bbox = gdf.geometry.bounds
+    resolution = 6
+    hex = gdf.h3.polyfill_resample(resolution)
+    hex = hex[['geometry']]
+    hex = hex.reset_index().drop(columns='h3_polyfill')
+    hex['hex_idx'] = hex.index + 1
+    hex = gpd.clip(hex, aoi)
+    hex.plot(edgecolor='black', linewidth=0.5, figsize=(10,10))
+    print(len(hex))
+    hex
